@@ -1,4 +1,4 @@
-package main
+package moex
 
 import (
 	"encoding/csv"
@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-func main() {
+func moex() {
 
 	dateFrom := os.Getenv("DATE_FROM")
 
