@@ -14,13 +14,13 @@ func parseSource() {
 	// TODO: function to parse source
 }
 
-func checkKeyWord(source, keyword string) {
+func checkKeyWord(source, keyword string) string {
 	// TODO: function to check keyword in the source
 }
 
 func checkNews() {
 	source := getSource()
 	keyword := getKeyWord()
-	checkKeyWord(source, keyword)
+	return checkKeyWord(source, keyword)
 
 }
