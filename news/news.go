@@ -1,6 +1,7 @@
 package news
 
 import (
+	"encoding/json"
 	"log"
 	"strconv"
 )
@@ -22,7 +23,17 @@ func checkKeyWord(source, keyword string) string {
 
 	log.Printf("lenght:%v", len(data))
 
-	log.Println(data)
+	for _, el := range data {
+		var m News
+		err := json.Unmarshal([]byte(el), &m)
+		checkError(err)
+
+		knownNews = append(knownNews, m.Hash)
+
+		log.Println(m.Title)
+	}
+
+	// log.Println(data[1])
 
 	return strconv.Itoa(len(data))
 }
@@ -44,6 +55,8 @@ func CheckNews(sources, keywords []string) []string {
 		}
 
 	}
+
+	log.Println(knownNews)
 
 	return result
 
