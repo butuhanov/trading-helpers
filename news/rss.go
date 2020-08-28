@@ -27,7 +27,16 @@ type Channel struct {
 	Items       []Item `xml:"item"`
 }
 
+type News struct {
+
+	Title string
+	Description string
+	Link string
+}
+
 func readRSS(source string) (error, []string) {
+
+	const maxDepth = 5 // максимальная глубина поиска
 
 	log.Println("checking", source)
 
@@ -35,7 +44,6 @@ func readRSS(source string) (error, []string) {
 
 	if err != nil {
 		log.Println(err)
-		fmt.Errorf("Cannot response %v", source)
 		return err, nil
 	}
 
@@ -66,6 +74,10 @@ func readRSS(source string) (error, []string) {
 	// fmt.Printf("Link : %s\n", rss.Channel.Link)
 
 	total := len(rss.Channel.Items)
+
+	if total<maxDepth {
+		total = maxDepth
+	}
 
 	// fmt.Printf("Total items : %v\n", total)
 
