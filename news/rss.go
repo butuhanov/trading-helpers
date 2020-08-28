@@ -2,6 +2,9 @@ package news
 
 import (
 	"bytes"
+	"crypto/md5"
+	"encoding/hex"
+	"encoding/json"
 	"encoding/xml"
 	"fmt"
 	"io/ioutil"
@@ -28,10 +31,10 @@ type Channel struct {
 }
 
 type News struct {
-
-	Title string
+	Title       string
 	Description string
-	Link string
+	Link        string
+	Hash        string
 }
 
 func readRSS(source string) (error, []string) {
@@ -75,7 +78,7 @@ func readRSS(source string) (error, []string) {
 
 	total := len(rss.Channel.Items)
 
-	if total<maxDepth {
+	if total > maxDepth {
 		total = maxDepth
 	}
 
@@ -84,13 +87,36 @@ func readRSS(source string) (error, []string) {
 	var result = make([]string, 0)
 
 	for i := 0; i < total; i++ {
-		result = append(result, rss.Channel.Items[i].Title)
 
-		// fmt.Printf("[%d] item title : %s\n", i, rss.Channel.Items[i].Title)
-		// fmt.Printf("[%d] item description : %s\n", i, rss.Channel.Items[i].Description)
-		// fmt.Printf("[%d] item link : %s\n\n", i, rss.Channel.Items[i].Link)
+		title := rss.Channel.Items[i].Title
+		description := rss.Channel.Items[i].Description
+		link := rss.Channel.Items[i].Link
+		hash := getMD5Hash(title + description + link)
+
+		data := &News{
+			Title:       title,
+			Description: description,
+			Link:        link,
+			Hash:        hash,
+		}
+
+		json, err := json.Marshal(data)
+
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+		result = append(result, string(json))
+
 	}
 
 	return nil, result
 
+}
+
+func getMD5Hash(text string) string {
+	hasher := md5.New()
+	hasher.Write([]byte(text))
+	return hex.EncodeToString(hasher.Sum(nil))
 }
