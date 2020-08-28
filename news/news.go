@@ -1,5 +1,9 @@
 package news
 
+import (
+	"log"
+)
+
 func parseSource() {
 	// TODO: function to parse source
 }
@@ -7,6 +11,8 @@ func parseSource() {
 func checkKeyWord(source, keyword string) string {
 	// TODO: function to check keyword in the source
 	// parseSource()
+
+	log.Println(readRSS(source))
 
 	return source
 }
@@ -19,7 +25,9 @@ func CheckNews(sources, keywords []string) []string {
 
 	for _, source := range sources { // перебираем все источники
 
-		for _, keyword := range keywords { // перебираем все ключевые слоав
+		for _, keyword := range keywords { // перебираем все ключевые слова
+
+			log.Println("checking:", keywords, source)
 
 			result = append(result, checkKeyWord(source, keyword))
 
