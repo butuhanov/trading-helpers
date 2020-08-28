@@ -6,11 +6,9 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"encoding/xml"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 )
 
 type Rss struct {
@@ -37,7 +35,7 @@ type News struct {
 	Hash        string
 }
 
-func readRSS(source string) (error, []string) {
+func readRSS(source string) ([]string, error) {
 
 	const maxDepth = 5 // максимальная глубина поиска
 
@@ -45,19 +43,13 @@ func readRSS(source string) (error, []string) {
 
 	response, err := http.Get(source)
 
-	if err != nil {
-		log.Println(err)
-		return err, nil
-	}
+	checkError(err)
 
 	defer response.Body.Close()
 
 	XMLdata, err := ioutil.ReadAll(response.Body)
 
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
+	checkError(err)
 
 	rss := new(Rss)
 
@@ -67,10 +59,7 @@ func readRSS(source string) (error, []string) {
 
 	err = decoded.Decode(rss)
 
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
+	checkError(err)
 
 	// fmt.Printf("Title : %s\n", rss.Channel.Title)
 	// fmt.Printf("Description : %s\n", rss.Channel.Description)
@@ -102,16 +91,13 @@ func readRSS(source string) (error, []string) {
 
 		json, err := json.Marshal(data)
 
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
+		checkError(err)
 
 		result = append(result, string(json))
 
 	}
 
-	return nil, result
+	return result, nil
 
 }
 

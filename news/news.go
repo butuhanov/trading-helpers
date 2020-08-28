@@ -5,6 +5,9 @@ import (
 	"strconv"
 )
 
+// Глобальный массив хэшей новостей которые уже были обработаны
+var knownNews []string
+
 func parseSource() {
 	// TODO: function to parse source
 }
@@ -13,13 +16,15 @@ func checkKeyWord(source, keyword string) string {
 	// TODO: function to check keyword in the source
 	// parseSource()
 
-	_, titles := readRSS(source)
+	data, err := readRSS(source)
 
-	log.Printf("lenght:%v", len(titles))
+	checkError(err)
 
-	log.Println(titles)
+	log.Printf("lenght:%v", len(data))
 
-	return strconv.Itoa(len(titles))
+	log.Println(data)
+
+	return strconv.Itoa(len(data))
 }
 
 // CheckNews возвращает вхождения ключевых слов в новостных источниках в виде массива
@@ -42,4 +47,11 @@ func CheckNews(sources, keywords []string) []string {
 
 	return result
 
+}
+
+// Стандартная обработка ошибок
+func checkError(err error) {
+	if err != nil {
+		panic(err)
+	}
 }
