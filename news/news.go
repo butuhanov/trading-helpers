@@ -2,6 +2,7 @@ package news
 
 import (
 	"log"
+	"strconv"
 )
 
 func parseSource() {
@@ -12,9 +13,13 @@ func checkKeyWord(source, keyword string) string {
 	// TODO: function to check keyword in the source
 	// parseSource()
 
-	log.Println(readRSS(source))
+	_, titles := readRSS(source)
 
-	return source
+	log.Printf("lenght:%v", len(titles))
+
+	log.Println(titles)
+
+	return strconv.Itoa(len(titles))
 }
 
 // CheckNews возвращает вхождения ключевых слов в новостных источниках в виде массива

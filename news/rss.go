@@ -61,13 +61,13 @@ func readRSS(source string) (error, []string) {
 		os.Exit(1)
 	}
 
-	fmt.Printf("Title : %s\n", rss.Channel.Title)
-	fmt.Printf("Description : %s\n", rss.Channel.Description)
-	fmt.Printf("Link : %s\n", rss.Channel.Link)
+	// fmt.Printf("Title : %s\n", rss.Channel.Title)
+	// fmt.Printf("Description : %s\n", rss.Channel.Description)
+	// fmt.Printf("Link : %s\n", rss.Channel.Link)
 
 	total := len(rss.Channel.Items)
 
-	fmt.Printf("Total items : %v\n", total)
+	// fmt.Printf("Total items : %v\n", total)
 
 	var result = make([]string, 0)
 
