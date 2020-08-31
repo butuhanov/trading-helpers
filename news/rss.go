@@ -37,8 +37,6 @@ type News struct {
 
 func readRSS(source string) ([]string, error) {
 
-	const maxDepth = 5 // максимальная глубина поиска
-
 	log.Println("checking", source)
 
 	response, err := http.Get(source)

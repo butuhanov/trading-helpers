@@ -9,6 +9,12 @@ import (
 // Глобальный массив хэшей новостей которые уже были обработаны
 var knownNews []string
 
+// максимальный размер буфера известных новостей
+const maxNewsLength = 5
+
+// максимальная глубина поиска
+const maxDepth = 20
+
 func parseSource() {
 	// TODO: function to parse source
 }
@@ -28,7 +34,14 @@ func checkKeyWord(source, keyword string) string {
 		err := json.Unmarshal([]byte(el), &m)
 		checkError(err)
 
-		knownNews = append(knownNews, m.Hash)
+		if len(knownNews) < maxNewsLength {
+			knownNews = append(knownNews, m.Hash)
+		} else {
+			knownNews = append(knownNews[maxNewsLength:], knownNews[1:]...)
+			knownNews = append(knownNews, m.Hash)
+		}
+
+		log.Printf("len: %d, cap: %d arr:%v\n", len(knownNews), cap(knownNews), knownNews)
 
 		log.Println(m.Title)
 	}
@@ -55,8 +68,6 @@ func CheckNews(sources, keywords []string) []string {
 		}
 
 	}
-
-	log.Println(knownNews)
 
 	return result
 
