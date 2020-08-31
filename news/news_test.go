@@ -8,12 +8,13 @@ import (
 
 func ExampleCheckNews() {
 	a := make([]string, 2)
-	b := make([]string, 1)
+	b := make([]string, 2)
 
 	a[0] = "https://www.interfax.ru/rss.asp"
 	a[1] = "https://www.interfax.ru/rss.asp"
-	b[0] = "test3"
+	b[0] = "сша"
+	b[1] = "газпром"
 	// b[1] = "test4"
 	fmt.Println(news.CheckNews(a, b))
-	// Output: [7 7]
+	// Output: [20 20 20 20]
 }

@@ -4,16 +4,17 @@ import (
 	"encoding/json"
 	"log"
 	"strconv"
+	"strings"
 )
 
 // Глобальный массив хэшей новостей которые уже были обработаны
 var knownNews []string
 
 // максимальный размер буфера известных новостей
-const maxNewsLength = 10
+const maxNewsLength = 200
 
 // максимальная глубина поиска
-const maxDepth = 7
+const maxDepth = 20
 
 func parseSource() {
 	// TODO: function to parse source
@@ -50,7 +51,17 @@ func checkKeyWord(source, keyword string) string {
 
 		// log.Printf("len: %d, cap: %d arr:%v\n", len(knownNews), cap(knownNews), knownNews)
 
-		log.Println(m.Title)
+		// Поиск ключевого слова в заголовке
+		// log.Println(m.Title)
+		if strings.Contains(strings.ToLower(m.Title), keyword) {
+			log.Println("Найдено в заголовке:", m.Title)
+		}
+		if strings.Contains(strings.ToLower(m.Description), keyword) {
+			log.Println("Найдено в описании:", m.Title, m.Description)
+		}
+
+		// Поиск ключевого слова в описании
+
 	}
 
 	// log.Println(data[1])
