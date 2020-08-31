@@ -37,7 +37,7 @@ type News struct {
 
 func readRSS(source string) ([]string, error) {
 
-	log.Println("checking", source)
+	log.Println("проверяем", source)
 
 	response, err := http.Get(source)
 
@@ -80,6 +80,14 @@ func readRSS(source string) ([]string, error) {
 		link := rss.Channel.Items[i].Link
 		hash := getMD5Hash(title + description + link)
 
+		// Если новость уже просмотрена, то переходим к следующей
+		_, ok := findElement(knownNews, hash)
+		// log.Printf("ищем элемент %v в %v, результат %v\n", m.Hash, knownNews, ok)
+		if ok {
+			// log.Println("новость", title, "уже проверяли.. пропускаем..")
+			continue
+		}
+
 		data := &News{
 			Title:       title,
 			Description: description,
@@ -90,6 +98,13 @@ func readRSS(source string) ([]string, error) {
 		json, err := json.Marshal(data)
 
 		checkError(err)
+
+		if len(knownNews) < maxNewsLength {
+			knownNews = append(knownNews, hash)
+		} else {
+			knownNews = append(knownNews[maxNewsLength:], knownNews[1:]...)
+			knownNews = append(knownNews, hash)
+		}
 
 		result = append(result, string(json))
 
@@ -110,7 +125,7 @@ func getMD5Hash(text string) string {
 func findElement(slice []string, val string) (int, bool) {
 	for i, item := range slice {
 		if item == val {
-			log.Printf("нашли на позиции %v\n", i)
+			// log.Printf("нашли на позиции %v\n", i)
 			return i, true
 		}
 	}
