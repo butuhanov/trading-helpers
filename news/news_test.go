@@ -7,13 +7,13 @@ import (
 )
 
 func ExampleCheckNews() {
-	a := make([]string, 1)
+	a := make([]string, 2)
 	b := make([]string, 1)
 
 	a[0] = "https://www.interfax.ru/rss.asp"
-	// a[1] = "test2"
+	a[1] = "https://www.interfax.ru/rss.asp"
 	b[0] = "test3"
 	// b[1] = "test4"
 	fmt.Println(news.CheckNews(a, b))
-	// Output: [20]
+	// Output: [7 7]
 }

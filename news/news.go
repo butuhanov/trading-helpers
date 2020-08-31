@@ -10,10 +10,10 @@ import (
 var knownNews []string
 
 // максимальный размер буфера известных новостей
-const maxNewsLength = 5
+const maxNewsLength = 10
 
 // максимальная глубина поиска
-const maxDepth = 20
+const maxDepth = 7
 
 func parseSource() {
 	// TODO: function to parse source
@@ -36,7 +36,7 @@ func checkKeyWord(source, keyword string) string {
 
 		// Если новость уже просмотрена, то переходим к следующей
 		_, ok := findElement(knownNews, m.Hash)
-		log.Printf("ищем элемент %v в %v, результат %v\n", m.Hash, knownNews, ok)
+		// log.Printf("ищем элемент %v в %v, результат %v\n", m.Hash, knownNews, ok)
 		if ok {
 			continue
 		}
@@ -48,7 +48,7 @@ func checkKeyWord(source, keyword string) string {
 			knownNews = append(knownNews, m.Hash)
 		}
 
-		log.Printf("len: %d, cap: %d arr:%v\n", len(knownNews), cap(knownNews), knownNews)
+		// log.Printf("len: %d, cap: %d arr:%v\n", len(knownNews), cap(knownNews), knownNews)
 
 		log.Println(m.Title)
 	}
