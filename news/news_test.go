@@ -15,5 +15,5 @@ func ExampleCheckNews() {
 	b[0] = "test3"
 	// b[1] = "test4"
 	fmt.Println(news.CheckNews(a, b))
-	// Output: [5]
+	// Output: [20]
 }

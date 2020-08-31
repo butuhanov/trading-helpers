@@ -104,3 +104,15 @@ func getMD5Hash(text string) string {
 	hasher.Write([]byte(text))
 	return hex.EncodeToString(hasher.Sum(nil))
 }
+
+// findElement takes a slice and looks for an element in it. If found it will
+// return it's key, otherwise it will return -1 and a bool of false.
+func findElement(slice []string, val string) (int, bool) {
+	for i, item := range slice {
+		if item == val {
+			log.Printf("нашли на позиции %v\n", i)
+			return i, true
+		}
+	}
+	return -1, false
+}

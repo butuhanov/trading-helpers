@@ -34,6 +34,13 @@ func checkKeyWord(source, keyword string) string {
 		err := json.Unmarshal([]byte(el), &m)
 		checkError(err)
 
+		// Если новость уже просмотрена, то переходим к следующей
+		_, ok := findElement(knownNews, m.Hash)
+		log.Printf("ищем элемент %v в %v, результат %v\n", m.Hash, knownNews, ok)
+		if ok {
+			continue
+		}
+
 		if len(knownNews) < maxNewsLength {
 			knownNews = append(knownNews, m.Hash)
 		} else {
