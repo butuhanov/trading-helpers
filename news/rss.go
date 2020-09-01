@@ -110,7 +110,7 @@ func readRSS(source string) ([]string, error) {
 			Title:       title,
 			Description: description,
 			Link:        link,
-			Date:       date,
+			Date:        date,
 			Hash:        hash,
 		}
 
