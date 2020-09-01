@@ -7,7 +7,8 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"io/ioutil"
-	"log"
+
+	// "log"
 	"net/http"
 )
 
@@ -29,6 +30,7 @@ type Channel struct {
 }
 
 type News struct {
+	SourceTitle string
 	Title       string
 	Description string
 	Link        string
@@ -37,7 +39,7 @@ type News struct {
 
 func readRSS(source string) ([]string, error) {
 
-	log.Println("проверяем", source)
+	// log.Println("проверяем", source)
 
 	response, err := http.Get(source)
 
@@ -62,6 +64,8 @@ func readRSS(source string) ([]string, error) {
 	// fmt.Printf("Title : %s\n", rss.Channel.Title)
 	// fmt.Printf("Description : %s\n", rss.Channel.Description)
 	// fmt.Printf("Link : %s\n", rss.Channel.Link)
+
+	sourceTitle:=rss.Channel.Title
 
 	total := len(rss.Channel.Items)
 
@@ -89,6 +93,7 @@ func readRSS(source string) ([]string, error) {
 		}
 
 		data := &News{
+			SourceTitle: sourceTitle,
 			Title:       title,
 			Description: description,
 			Link:        link,

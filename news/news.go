@@ -23,11 +23,11 @@ func parseSource() {
 	// TODO: function to parse source
 }
 
-func checkKeyWord(data []string, keyword string) string {
+func checkKeyWord(data []string, source, keyword string) string {
 	// TODO: function to check keyword in the source
 	// parseSource()
 
-	log.Printf("ищем:%v", keyword)
+	// log.Printf("ищем:%v", keyword)
 
 	for _, el := range data {
 		var m News
@@ -39,10 +39,10 @@ func checkKeyWord(data []string, keyword string) string {
 		// Поиск ключевого слова в заголовке
 		// log.Println(m.Title)
 		if strings.Contains(strings.ToLower(m.Title), keyword) {
-			log.Println("Найдено в заголовке:", html.UnescapeString(m.Title))
+			log.Println(m.SourceTitle, "\nНайдено", keyword, "в заголовке:", html.UnescapeString(m.Title), m.Link)
 		}
 		if strings.Contains(strings.ToLower(m.Description), keyword) {
-			log.Println("Найдено в описании:", m.Title, "-", html.UnescapeString(m.Description))
+			log.Println(m.SourceTitle, "\nНайдено", keyword, "в описании:", m.Title, "-", html.UnescapeString(m.Description), m.Link)
 		}
 
 		// Поиск ключевого слова в описании
@@ -62,11 +62,11 @@ func CheckNews(sourceFile, keywordFile string) ([]string, error) {
 
 	var sources, keywords []string
 
-	sourcesFromFile, err :=	readDataFromFile(sourceFile)
+	sourcesFromFile, err := readDataFromFile(sourceFile)
 	if err != nil {
 		return nil, err
 	}
-	keywordsFromFile, err :=readDataFromFile(keywordFile)
+	keywordsFromFile, err := readDataFromFile(keywordFile)
 	if err != nil {
 		return nil, err
 	}
@@ -80,10 +80,10 @@ func CheckNews(sourceFile, keywordFile string) ([]string, error) {
 			log.Println("ошибка при парсинге, пропускаем источник")
 			continue
 		}
-		log.Printf("получено записей:%v", len(data))
+		// log.Printf("получено записей:%v", len(data))
 
 		for _, keyword := range keywords { // перебираем все ключевые слова
-			result = append(result, checkKeyWord(data, keyword))
+			result = append(result, checkKeyWord(data, source, keyword))
 
 		}
 
@@ -113,7 +113,7 @@ func readDataFromFile(source string) ([]string, error) {
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		log.Println(scanner.Text())
+		// log.Println(scanner.Text())
 		result = append(result, scanner.Text())
 	}
 
