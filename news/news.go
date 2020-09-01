@@ -113,8 +113,10 @@ func readDataFromFile(source string) ([]string, error) {
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		// log.Println(scanner.Text())
-		result = append(result, scanner.Text())
+		if scanner.Text()[0] != 35 && scanner.Text()[0] != 47 {
+			result = append(result, scanner.Text())
+		}
+
 	}
 
 	if err := scanner.Err(); err != nil {
