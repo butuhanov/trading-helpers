@@ -8,10 +8,8 @@ import (
 	"encoding/xml"
 	"io/ioutil"
 	"log"
-	"time"
-
-	// "log"
 	"net/http"
+	"time"
 )
 
 type Rss struct {
@@ -41,7 +39,7 @@ type News struct {
 
 func readRSS(source string) ([]string, error) {
 
-	log.Println("проверяем", source)
+	// log.Println("проверяем", source)
 
 	c := &http.Client{
 		Timeout: httpGetTimeout * time.Second,
@@ -68,7 +66,10 @@ func readRSS(source string) ([]string, error) {
 
 	err = decoded.Decode(rss)
 
-	checkError(err)
+	if err != nil {
+		log.Println("ошибка при декодировании:", err)
+		return nil, err
+	}
 
 	// fmt.Printf("Title : %s\n", rss.Channel.Title)
 	// fmt.Printf("Description : %s\n", rss.Channel.Description)
