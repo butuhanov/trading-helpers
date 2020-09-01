@@ -19,6 +19,9 @@ const maxNewsLength = 200
 // максимальная глубина поиска
 const maxDepth = 20
 
+// таймаут запроса
+const httpGetTimeout = 3
+
 func parseSource() {
 	// TODO: function to parse source
 }
@@ -77,7 +80,7 @@ func CheckNews(sourceFile, keywordFile string) ([]string, error) {
 
 		data, err := readRSS(source)
 		if err != nil {
-			log.Println("ошибка при парсинге, пропускаем источник")
+			log.Println("ошибка при парсинге:", err, "пропускаем источник")
 			continue
 		}
 		// log.Printf("получено записей:%v", len(data))

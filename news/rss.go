@@ -7,6 +7,8 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"io/ioutil"
+	"log"
+	"time"
 
 	// "log"
 	"net/http"
@@ -39,11 +41,18 @@ type News struct {
 
 func readRSS(source string) ([]string, error) {
 
-	// log.Println("проверяем", source)
+	log.Println("проверяем", source)
 
-	response, err := http.Get(source)
+	c := &http.Client{
+		Timeout: httpGetTimeout * time.Second,
+	}
 
-	checkError(err)
+	response, err := c.Get(source)
+
+	if err != nil {
+		return nil, err
+		// log.Fatal(err)
+	}
 
 	defer response.Body.Close()
 
@@ -65,7 +74,7 @@ func readRSS(source string) ([]string, error) {
 	// fmt.Printf("Description : %s\n", rss.Channel.Description)
 	// fmt.Printf("Link : %s\n", rss.Channel.Link)
 
-	sourceTitle:=rss.Channel.Title
+	sourceTitle := rss.Channel.Title
 
 	total := len(rss.Channel.Items)
 
