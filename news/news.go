@@ -2,6 +2,7 @@ package news
 
 import (
 	"encoding/json"
+	"html"
 	"log"
 	"strconv"
 	"strings"
@@ -24,7 +25,6 @@ func checkKeyWord(data []string, keyword string) string {
 	// TODO: function to check keyword in the source
 	// parseSource()
 
-
 	log.Printf("ищем:%v", keyword)
 
 	for _, el := range data {
@@ -37,10 +37,10 @@ func checkKeyWord(data []string, keyword string) string {
 		// Поиск ключевого слова в заголовке
 		// log.Println(m.Title)
 		if strings.Contains(strings.ToLower(m.Title), keyword) {
-			log.Println("Найдено в заголовке:", m.Title)
+			log.Println("Найдено в заголовке:", html.UnescapeString(m.Title))
 		}
 		if strings.Contains(strings.ToLower(m.Description), keyword) {
-			log.Println("Найдено в описании:", m.Title, "-", m.Description)
+			log.Println("Найдено в описании:", m.Title, "-", html.UnescapeString(m.Description))
 		}
 
 		// Поиск ключевого слова в описании
