@@ -20,6 +20,7 @@ type Item struct {
 	Title       string `xml:"title"`
 	Link        string `xml:"link"`
 	Description string `xml:"description"`
+	Date        string `xml:"pubDate"`
 }
 
 type Channel struct {
@@ -34,6 +35,7 @@ type News struct {
 	Title       string
 	Description string
 	Link        string
+	Date        string
 	Hash        string
 }
 
@@ -92,6 +94,7 @@ func readRSS(source string) ([]string, error) {
 		title := rss.Channel.Items[i].Title
 		description := rss.Channel.Items[i].Description
 		link := rss.Channel.Items[i].Link
+		date := rss.Channel.Items[i].Date
 		hash := getMD5Hash(title + description + link)
 
 		// Если новость уже просмотрена, то переходим к следующей
@@ -107,6 +110,7 @@ func readRSS(source string) ([]string, error) {
 			Title:       title,
 			Description: description,
 			Link:        link,
+			Date:       date,
 			Hash:        hash,
 		}
 

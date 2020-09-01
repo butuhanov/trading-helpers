@@ -42,10 +42,10 @@ func checkKeyWord(data []string, source, keyword string) string {
 		// Поиск ключевого слова в заголовке
 		// log.Println(m.Title)
 		if strings.Contains(strings.ToLower(m.Title), keyword) {
-			log.Println(m.SourceTitle, "\nНайдено", keyword, "в заголовке:", html.UnescapeString(m.Title), m.Link)
+			log.Println(m.SourceTitle, "\n", m.Date, "\nНайдено", keyword, "в заголовке:", html.UnescapeString(m.Title), m.Link)
 		}
 		if strings.Contains(strings.ToLower(m.Description), keyword) {
-			log.Println(m.SourceTitle, "\nНайдено", keyword, "в описании:", m.Title, "-", html.UnescapeString(m.Description), m.Link)
+			log.Println(m.SourceTitle, "\n", m.Date, "\nНайдено", keyword, "в описании:", m.Title, "-", html.UnescapeString(m.Description), m.Link)
 		}
 
 		// Поиск ключевого слова в описании
