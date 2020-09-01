@@ -1,9 +1,11 @@
 package news
 
 import (
+	"bufio"
 	"encoding/json"
 	"html"
 	"log"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -54,9 +56,22 @@ func checkKeyWord(data []string, keyword string) string {
 
 // CheckNews возвращает вхождения ключевых слов в новостных источниках в виде массива
 // Входные параметры - массивы источников и ключевых слов
-func CheckNews(sources, keywords []string) []string {
+func CheckNews(sourceFile, keywordFile string) ([]string, error) {
 
 	var result = make([]string, 0)
+
+	var sources, keywords []string
+
+	sourcesFromFile, err :=	readDataFromFile(sourceFile)
+	if err != nil {
+		return nil, err
+	}
+	keywordsFromFile, err :=readDataFromFile(keywordFile)
+	if err != nil {
+		return nil, err
+	}
+	sources = append(sources, sourcesFromFile...)
+	keywords = append(keywords, keywordsFromFile...)
 
 	for _, source := range sources { // перебираем все источники
 
@@ -74,7 +89,7 @@ func CheckNews(sources, keywords []string) []string {
 
 	}
 
-	return result
+	return result, nil
 
 }
 
@@ -83,4 +98,30 @@ func checkError(err error) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func readDataFromFile(source string) ([]string, error) {
+
+	var result []string
+
+	file, err := os.Open(source)
+	if err != nil {
+		return nil, err
+		// log.Fatal(err)
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		log.Println(scanner.Text())
+		result = append(result, scanner.Text())
+	}
+
+	if err := scanner.Err(); err != nil {
+		return nil, err
+		// log.Fatal(err)
+	}
+
+	return result, nil
+
 }
