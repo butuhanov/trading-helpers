@@ -8,6 +8,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sync"
 )
 
 // Глобальный массив хэшей новостей которые уже были обработаны
@@ -26,7 +27,7 @@ func parseSource() {
 	// TODO: function to parse source
 }
 
-func checkKeyWord(data []string, source, keyword string) string {
+func checkKeyWord(data []string, keyword string) string {
 	// TODO: function to check keyword in the source
 	// parseSource()
 
@@ -40,12 +41,16 @@ func checkKeyWord(data []string, source, keyword string) string {
 		// log.Printf("len: %d, cap: %d arr:%v\n", len(knownNews), cap(knownNews), knownNews)
 
 		// Поиск ключевого слова в заголовке
-		// log.Println(m.Title)
-		if strings.Contains(strings.ToLower(m.Title), keyword) {
-			log.Println(m.SourceTitle, "\n", m.Date, "\nНайдено", keyword, "в заголовке:", html.UnescapeString(m.Title), m.Link)
-		}
-		if strings.Contains(strings.ToLower(m.Description), keyword) {
-			log.Println(m.SourceTitle, "\n", m.Date, "\nНайдено", keyword, "в описании:", m.Title, "-", html.UnescapeString(m.Description), m.Link)
+
+		if m.Error != "" {
+			log.Println("При получении данных получена ошибка", m.Error, "пропускаем...")
+		} else {
+			if strings.Contains(strings.ToLower(m.Title), keyword) {
+				log.Println(m.SourceTitle, "\n", m.Date, "\nНайдено", keyword, "в заголовке:", html.UnescapeString(m.Title), m.Link)
+			}
+			if strings.Contains(strings.ToLower(m.Description), keyword) {
+				log.Println(m.SourceTitle, "\n", m.Date, "\nНайдено", keyword, "в описании:", m.Title, "-", html.UnescapeString(m.Description), m.Link)
+			}
 		}
 
 		// Поиск ключевого слова в описании
@@ -76,19 +81,40 @@ func CheckNews(sourceFile, keywordFile string) ([]string, error) {
 	sources = append(sources, sourcesFromFile...)
 	keywords = append(keywords, keywordsFromFile...)
 
-	for _, source := range sources { // перебираем все источники
+	// dataCh := make(chan []string)  // канал для результатов запроса
+	dataCh := make(chan []string, len(sources)) // буферизованный
+	log.Println("вместимость канала", cap(dataCh))
 
-		data, err := readRSS(source)
-		if err != nil {
-			log.Println("ошибка при парсинге:", err, "пропускаем источник")
-			continue
-		}
-		// log.Printf("получено записей:%v", len(data))
+	wg := new(sync.WaitGroup)
+	wg.Add(cap(dataCh))
+	for _, source := range sources {
 
-		for _, keyword := range keywords { // перебираем все ключевые слова
-			result = append(result, checkKeyWord(data, source, keyword))
+		go readRSS(source, wg, dataCh) // перебираем все источники
+	}
 
-		}
+	wg.Wait()
+	log.Println("все запросы выполнены")
+
+	var data []string
+
+	for i := 0; i < cap(dataCh); i++ {
+		data = append(data, <-dataCh...)
+	}
+
+	close(dataCh)
+	// data, err := readRSS(source)
+
+	// if err != nil {
+	// 	log.Println("ошибка при парсинге:", err, "пропускаем источник")
+	// 	continue
+	// }
+	// log.Printf("получено записей:%v", len(data))
+
+	log.Printf("получено записей:%v", len(data))
+	// log.Printf("данные:%v", data)
+
+	for _, keyword := range keywords { // перебираем все ключевые слова
+		result = append(result, checkKeyWord(data, keyword))
 
 	}
 
@@ -99,7 +125,7 @@ func CheckNews(sourceFile, keywordFile string) ([]string, error) {
 // Стандартная обработка ошибок
 func checkError(err error) {
 	if err != nil {
-		panic(err)
+		log.Println("При выполнении операции произошла ошибка:", err)
 	}
 }
 

@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"sync"
 	"time"
 )
 
@@ -37,11 +38,16 @@ type News struct {
 	Link        string
 	Date        string
 	Hash        string
+	Error       string
 }
 
-func readRSS(source string) ([]string, error) {
+func readRSS(source string, wg *sync.WaitGroup, dataCh chan []string) error {
+
+	defer wg.Done()
 
 	// log.Println("проверяем", source)
+
+	var result = make([]string, 0)
 
 	c := &http.Client{
 		Timeout: httpGetTimeout * time.Second,
@@ -50,15 +56,18 @@ func readRSS(source string) ([]string, error) {
 	response, err := c.Get(source)
 
 	if err != nil {
-		return nil, err
-		// log.Fatal(err)
+		generateError("Ошибка при получении ответа", source, err.Error(), dataCh)
+		return err
 	}
 
 	defer response.Body.Close()
 
 	XMLdata, err := ioutil.ReadAll(response.Body)
 
-	checkError(err)
+	if err != nil {
+		generateError("Ошибка при чтении ответа", source, err.Error(), dataCh)
+		return err
+	}
 
 	rss := new(Rss)
 
@@ -69,8 +78,8 @@ func readRSS(source string) ([]string, error) {
 	err = decoded.Decode(rss)
 
 	if err != nil {
-		log.Println("ошибка при декодировании:", err)
-		return nil, err
+		generateError("Ошибка при декодировании", source, err.Error(), dataCh)
+		return err
 	}
 
 	// fmt.Printf("Title : %s\n", rss.Channel.Title)
@@ -86,8 +95,6 @@ func readRSS(source string) ([]string, error) {
 	}
 
 	// fmt.Printf("Total items : %v\n", total)
-
-	var result = make([]string, 0)
 
 	for i := 0; i < total; i++ {
 
@@ -116,7 +123,10 @@ func readRSS(source string) ([]string, error) {
 
 		json, err := json.Marshal(data)
 
-		checkError(err)
+		if err != nil {
+			generateError("Ошибка при формировании JSON", source, err.Error(), dataCh)
+			return err
+		}
 
 		if len(knownNews) < maxNewsLength {
 			knownNews = append(knownNews, hash)
@@ -128,8 +138,8 @@ func readRSS(source string) ([]string, error) {
 		result = append(result, string(json))
 
 	}
-
-	return result, nil
+	dataCh <- result
+	return nil
 
 }
 
@@ -149,4 +159,21 @@ func findElement(slice []string, val string) (int, bool) {
 		}
 	}
 	return -1, false
+}
+
+func generateError(text, source, err string, dataCh chan []string) {
+	data := &News{
+		Link:  source,
+		Error: err,
+	}
+	var result = make([]string, 0)
+
+	log.Println("generateError:", text, source, err)
+
+	json, err1 := json.Marshal(data)
+	checkError(err1)
+
+	result = append(result, string(json))
+	dataCh <- result
+
 }
