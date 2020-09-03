@@ -63,6 +63,8 @@ func checkKeyWord(data []string, keyword string) string {
 
 	// log.Printf("ищем:%v", keyword)
 
+	var result = make([]string, 0)
+
 	for _, el := range data {
 		var m News
 		err := json.Unmarshal([]byte(el), &m)
@@ -73,21 +75,29 @@ func checkKeyWord(data []string, keyword string) string {
 		// Поиск ключевого слова в заголовке
 
 		if m.Error != "" {
-			log.Println("При получении данных получена ошибка", m.Error, "пропускаем...")
+			log.Info("При получении данных получена ошибка, пропускаем ", m.Error)
 		} else {
 			if strings.Contains(strings.ToLower(m.Title), keyword) {
-				log.Println(m.SourceTitle, "\n", m.Date, "\nНайдено", keyword, "в заголовке:", html.UnescapeString(m.Title), m.Link)
+				log.Debug(m.SourceTitle, "\n", m.Date, "\nНайдено", keyword, "в заголовке:", html.UnescapeString(m.Title), m.Link)
+				result = append(result, html.UnescapeString(m.Title))
 			}
 			if strings.Contains(strings.ToLower(m.Description), keyword) {
-				log.Println(m.SourceTitle, "\n", m.Date, "\nНайдено", keyword, "в описании:", m.Title, "-", html.UnescapeString(m.Description), m.Link)
+				log.Debug(m.SourceTitle, "\n", m.Date, "\nНайдено", keyword, "в описании:", m.Title, "-", html.UnescapeString(m.Description), m.Link)
+				result = append(result, html.UnescapeString(m.Description))
 			}
 		}
 
 		// Поиск ключевого слова в описании
 
+
 	}
 
+	log.Info(result)
+
 	// log.Println(data[1])
+
+
+
 
 	return strconv.Itoa(len(data))
 }
@@ -113,7 +123,7 @@ func CheckNews(sourceFile, keywordFile string) ([]string, error) {
 
 	// dataCh := make(chan []string)  // канал для результатов запроса
 	dataCh := make(chan []string, len(sources)) // буферизованный
-	log.Println("вместимость канала", cap(dataCh))
+	log.Debug("вместимость канала", cap(dataCh))
 
 	wg := new(sync.WaitGroup)
 	wg.Add(cap(dataCh))
@@ -123,7 +133,7 @@ func CheckNews(sourceFile, keywordFile string) ([]string, error) {
 	}
 
 	wg.Wait()
-	log.Println("все запросы выполнены")
+	log.Debug("все запросы выполнены")
 
 	var data []string
 
@@ -140,7 +150,7 @@ func CheckNews(sourceFile, keywordFile string) ([]string, error) {
 	// }
 	// log.Printf("получено записей:%v", len(data))
 
-	log.Printf("получено записей:%v", len(data))
+	log.Debug("получено записей:", len(data))
 	// log.Printf("данные:%v", data)
 
 	for _, keyword := range keywords { // перебираем все ключевые слова
@@ -155,7 +165,7 @@ func CheckNews(sourceFile, keywordFile string) ([]string, error) {
 // Стандартная обработка ошибок
 func checkError(err error) {
 	if err != nil {
-		log.Println("При выполнении операции произошла ошибка:", err)
+		log.Warn("При выполнении операции произошла ошибка:", err)
 	}
 }
 
