@@ -7,10 +7,16 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"io/ioutil"
-	"log"
+
+	// "log"
+	"fmt"
 	"net/http"
+	"runtime"
+	"strings"
 	"sync"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type Rss struct {
@@ -56,7 +62,7 @@ func readRSS(source string, wg *sync.WaitGroup, dataCh chan []string) error {
 	response, err := c.Get(source)
 
 	if err != nil {
-		generateError("Ошибка при получении ответа", source, err.Error(), dataCh)
+		generateWarn("Ошибка при получении ответа", source, err.Error(), dataCh)
 		return err
 	}
 
@@ -65,7 +71,7 @@ func readRSS(source string, wg *sync.WaitGroup, dataCh chan []string) error {
 	XMLdata, err := ioutil.ReadAll(response.Body)
 
 	if err != nil {
-		generateError("Ошибка при чтении ответа", source, err.Error(), dataCh)
+		generateWarn("Ошибка при чтении ответа", source, err.Error(), dataCh)
 		return err
 	}
 
@@ -78,7 +84,7 @@ func readRSS(source string, wg *sync.WaitGroup, dataCh chan []string) error {
 	err = decoded.Decode(rss)
 
 	if err != nil {
-		generateError("Ошибка при декодировании", source, err.Error(), dataCh)
+		generateWarn("Ошибка при декодировании", source, err.Error(), dataCh)
 		return err
 	}
 
@@ -124,7 +130,7 @@ func readRSS(source string, wg *sync.WaitGroup, dataCh chan []string) error {
 		json, err := json.Marshal(data)
 
 		if err != nil {
-			generateError("Ошибка при формировании JSON", source, err.Error(), dataCh)
+			generateWarn("Ошибка при формировании JSON", source, err.Error(), dataCh)
 			return err
 		}
 
@@ -161,14 +167,24 @@ func findElement(slice []string, val string) (int, bool) {
 	return -1, false
 }
 
-func generateError(text, source, err string, dataCh chan []string) {
+func generateWarn(text, source, err string, dataCh chan []string) {
 	data := &News{
 		Link:  source,
 		Error: err,
 	}
 	var result = make([]string, 0)
 
-	log.Println("generateError:", text, source, err)
+// Showing file, function name, and line number with logrus:
+	if pc, file, line, ok := runtime.Caller(1); ok {
+		file = file[strings.LastIndex(file, "/")+1:]
+		funcName := runtime.FuncForPC(pc).Name()
+		log.WithFields(
+			log.Fields{
+				"msg":    err,
+				"source": source,
+				"code":    fmt.Sprintf("%s:%s:%d", file, funcName, line),
+			}).Warn(text)
+	}
 
 	json, err1 := json.Marshal(data)
 	checkError(err1)

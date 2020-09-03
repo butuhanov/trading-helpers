@@ -4,11 +4,14 @@ import (
 	"bufio"
 	"encoding/json"
 	"html"
-	"log"
+
+	// "log"
 	"os"
 	"strconv"
 	"strings"
 	"sync"
+
+	log "github.com/sirupsen/logrus"
 )
 
 // Глобальный массив хэшей новостей которые уже были обработаны
@@ -22,6 +25,33 @@ const maxDepth = 20
 
 // таймаут запроса
 const httpGetTimeout = 3
+
+func init() {
+	// Log as JSON instead of the default ASCII formatter.
+	log.SetFormatter(&log.JSONFormatter{})
+
+	// Output to stdout instead of the default stderr
+	// Can be any io.Writer, see below for File example
+	log.SetOutput(os.Stdout)
+
+	// Only log the warning severity or above.
+	log.SetLevel(log.InfoLevel)
+	// log.SetLevel(log.DebugLevel)
+
+	// log.SetReportCaller(true)
+
+	// log.SetFormatter(&log.TextFormatter{
+	// 	DisableColors: false,
+	// 	FullTimestamp: false,
+	// })
+
+	// log.Trace("Something very low level.")
+	// log.Debug("Useful debugging information.")
+	// log.Info("Something noteworthy happened!")
+	// log.Warn("You should probably take a look at this.")
+	// log.Error("Something failed but I'm not quitting.")
+
+}
 
 func parseSource() {
 	// TODO: function to parse source
