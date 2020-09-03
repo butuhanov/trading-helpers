@@ -61,7 +61,7 @@ func checkKeyWord(data []string, keyword string) string {
 	// TODO: function to check keyword in the source
 	// parseSource()
 
-	// log.Printf("ищем:%v", keyword)
+	log.Info("ищем:", keyword, " ====================================================")
 
 	var result = make([]string, 0)
 
@@ -75,7 +75,7 @@ func checkKeyWord(data []string, keyword string) string {
 		// Поиск ключевого слова в заголовке
 
 		if m.Error != "" {
-			log.Info("При получении данных получена ошибка, пропускаем ", m.Error)
+			log.Info("При получении данных получена ошибка, пропускаем ", m.Link)
 		} else {
 			if strings.Contains(strings.ToLower(m.Title), keyword) {
 				log.Debug(m.SourceTitle, "\n", m.Date, "\nНайдено", keyword, "в заголовке:", html.UnescapeString(m.Title), m.Link)
@@ -89,15 +89,11 @@ func checkKeyWord(data []string, keyword string) string {
 
 		// Поиск ключевого слова в описании
 
-
 	}
 
 	log.Info(result)
 
 	// log.Println(data[1])
-
-
-
 
 	return strconv.Itoa(len(data))
 }
