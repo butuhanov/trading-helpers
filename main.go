@@ -28,5 +28,6 @@ func main() {
 	if err != nil {
 		log.Fatal("could not get answer: ", err)
 	}
-	log.Println("Output:", resp.GetSample)
+
+	log.Println("Output:", string([]byte(resp.News)), err)
 }

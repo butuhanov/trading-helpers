@@ -24,6 +24,7 @@ package news;
 
 message LastNews {
     string sample = 1;
+    bytes news = 2;
 }
 
 message MessageParams {}

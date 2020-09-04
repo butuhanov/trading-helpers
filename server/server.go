@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"net"
+	"strings"
 
 	log "github.com/sirupsen/logrus"
 
@@ -23,7 +24,13 @@ func (s *NewsServiceServer) GetNews(ctx context.Context,
 
 	a := "./news/example_data/sources.txt"
 	b := "./news/example_data/keywords.txt"
+
 	res, err := news.CheckNews(a, b)
+
+	stringByte := "\x00" + strings.Join(res, "\x20\x00") // x20 = space and x00 = null
+
+	response.News = []byte(stringByte)
+
 	log.Println(res, err)
 
 	return response, err
