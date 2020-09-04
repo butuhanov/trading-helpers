@@ -28,7 +28,7 @@ const httpGetTimeout = 3
 
 func init() {
 	// Log as JSON instead of the default ASCII formatter.
-	log.SetFormatter(&log.JSONFormatter{})
+	// log.SetFormatter(&log.JSONFormatter{})
 
 	// Output to stdout instead of the default stderr
 	// Can be any io.Writer, see below for File example
@@ -36,7 +36,7 @@ func init() {
 
 	// Only log the warning severity or above.
 	log.SetLevel(log.InfoLevel)
-	// log.SetLevel(log.DebugLevel)
+	log.SetLevel(log.DebugLevel)
 
 	// log.SetReportCaller(true)
 

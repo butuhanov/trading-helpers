@@ -21,27 +21,35 @@ func (s *NewsServiceServer) GetNews(ctx context.Context,
 	var err error
 	response := new(ps.LastNews)
 
-	a := "./example_data/sources.txt"
-	b := "./example_data/keywords.txt"
+	a := "./news/example_data/sources.txt"
+	b := "./news/example_data/keywords.txt"
 	res, err := news.CheckNews(a, b)
 	log.Println(res, err)
 
 	return response, err
 }
 
-func startSever() {
+func StartServer() {
+	log.Info("starting server...")
+
 	server := grpc.NewServer()
 
 	instance := new(NewsServiceServer)
 
 	ps.RegisterNewsServiceServer(server, instance)
 
+	log.Debug("creating grpc listener...")
+
 	listener, err := net.Listen("tcp", ":8080")
 	if err != nil {
 		log.Fatal("Unable to create grpc listener:", err)
 	}
 
+	log.Debug("start server serve listener...")
+
 	if err = server.Serve(listener); err != nil {
 		log.Fatal("Unable to start server:", err)
 	}
+
+	log.Info("server started...")
 }
