@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package news;
+
+message News {
+    string sample = 1;
+}
+
+service NewsService {
+    rpc GetNews() returns (LastNews) {}
+}
