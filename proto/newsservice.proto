@@ -2,6 +2,26 @@ syntax = "proto3";
 
 package news;
 
+// > go get -u google.golang.org/grpc
+
+// > go get -u github.com/golang/protobuf/protoc-gen-go
+
+// > sudo apt  install protobuf-compiler
+// ...
+// Следующие НОВЫЕ пакеты будут установлены:
+// libprotobuf-dev libprotoc17 protobuf-compiler
+// ...
+
+// > protoc --version
+// libprotoc 3.6.1
+
+// >protoc -I proto proto/newsservice.proto --go_out=plugins=grpc:proto/
+// WARNING: Missing 'go_package' option in "newsservice.proto",
+// please specify it with the full Go package path as a future release of protoc-gen-go will require this be specified.
+// See https://developers.google.com/protocol-buffers/docs/reference/go-generated#package for more information.
+
+
+
 message LastNews {
     string sample = 1;
 }
