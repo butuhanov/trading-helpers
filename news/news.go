@@ -7,7 +7,6 @@ import (
 
 	// "log"
 	"os"
-	"strconv"
 	"strings"
 	"sync"
 
@@ -57,7 +56,7 @@ func parseSource() {
 	// TODO: function to parse source
 }
 
-func checkKeyWord(data []string, keyword string) string {
+func checkKeyWord(data []string, keyword string) []string {
 	// TODO: function to check keyword in the source
 	// parseSource()
 
@@ -95,7 +94,9 @@ func checkKeyWord(data []string, keyword string) string {
 
 	// log.Println(data[1])
 
-	return strconv.Itoa(len(data))
+	return result
+
+	// return strconv.Itoa(len(data))
 }
 
 // CheckNews возвращает вхождения ключевых слов в новостных источниках в виде массива
@@ -150,7 +151,7 @@ func CheckNews(sourceFile, keywordFile string) ([]string, error) {
 	// log.Printf("данные:%v", data)
 
 	for _, keyword := range keywords { // перебираем все ключевые слова
-		result = append(result, checkKeyWord(data, keyword))
+		result = append(result, checkKeyWord(data, keyword)...)
 
 	}
 
