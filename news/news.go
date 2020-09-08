@@ -77,12 +77,15 @@ func checkKeyWord(data []string, keyword string) []string {
 			log.Info("При получении данных получена ошибка, пропускаем ", m.Link)
 		} else {
 			if strings.Contains(strings.ToLower(m.Title), keyword) {
-				log.Debug(m.SourceTitle, "\n", m.Date, "\nНайдено", keyword, "в заголовке:", html.UnescapeString(m.Title), m.Link)
-				result = append(result, html.UnescapeString(m.Title))
-			}
-			if strings.Contains(strings.ToLower(m.Description), keyword) {
-				log.Debug(m.SourceTitle, "\n", m.Date, "\nНайдено", keyword, "в описании:", m.Title, "-", html.UnescapeString(m.Description), m.Link)
-				result = append(result, html.UnescapeString(m.Description))
+				log.Debug("Найдено", keyword, "в заголовке")
+				result = append(result, m.SourceTitle+"\n"+m.Date+"\n"+html.UnescapeString(m.Title)+":"+html.UnescapeString(m.Description)+"  ссылка:"+m.Link)
+				break
+			} else {
+				if strings.Contains(strings.ToLower(m.Description), keyword) {
+					log.Debug("Найдено", keyword, "в описании")
+					result = append(result, m.SourceTitle+"\n"+m.Date+"\n"+html.UnescapeString(m.Title)+":"+html.UnescapeString(m.Description)+"  ссылка:"+m.Link)
+					break
+				}
 			}
 		}
 

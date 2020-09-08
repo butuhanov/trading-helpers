@@ -29,5 +29,5 @@ func main() {
 		log.Fatal("could not get answer: ", err)
 	}
 
-	log.Println("Output:", string([]byte(resp.News)), err)
+	log.Println("Output:\n", string([]byte(resp.News)), err)
 }
