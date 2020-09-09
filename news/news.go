@@ -20,7 +20,7 @@ var knownNews []string
 const maxNewsLength = 200
 
 // максимальная глубина поиска
-const maxDepth = 20
+const maxDepth = 5
 
 // таймаут запроса
 const httpGetTimeout = 3
@@ -62,12 +62,16 @@ func checkKeyWord(data []string, keyword string) []string {
 
 	log.Info("ищем:", keyword, " ====================================================")
 
+	log.Info(data)
+
 	var result = make([]string, 0)
 
 	for _, el := range data {
 		var m News
 		err := json.Unmarshal([]byte(el), &m)
 		checkError(err)
+
+		log.Info(m)
 
 		// log.Printf("len: %d, cap: %d arr:%v\n", len(knownNews), cap(knownNews), knownNews)
 
@@ -93,6 +97,11 @@ func checkKeyWord(data []string, keyword string) []string {
 
 	}
 
+	b, err := json.Marshal(result)
+	checkError(err)
+
+	log.Info(string(b))
+
 	log.Info(result)
 
 	// log.Println(data[1])
@@ -104,7 +113,7 @@ func checkKeyWord(data []string, keyword string) []string {
 
 // CheckNews возвращает вхождения ключевых слов в новостных источниках в виде массива
 // Входные параметры - массивы источников и ключевых слов
-func CheckNews(sourceFile, keywordFile string) ([]string, error) {
+func CheckNews(sourceFile, keywordFile string) ([]byte, error) {
 
 	var result = make([]string, 0)
 
@@ -158,7 +167,10 @@ func CheckNews(sourceFile, keywordFile string) ([]string, error) {
 
 	}
 
-	return result, nil
+	b, err := json.Marshal(result)
+	checkError(err)
+
+	return b, nil
 
 }
 
