@@ -36,7 +36,7 @@ func init() {
 	log.SetLevel(log.InfoLevel)
 	// log.SetLevel(log.DebugLevel)
 
-	// log.SetReportCaller(true)
+	log.SetReportCaller(true)
 
 	// log.SetFormatter(&log.TextFormatter{
 	// 	DisableColors: false,

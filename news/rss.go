@@ -174,7 +174,7 @@ func generateWarn(text, source, err string, dataCh chan []string) {
 	}
 	var result = make([]string, 0)
 
-// Showing file, function name, and line number with logrus:
+	// Showing file, function name, and line number with logrus:
 	if pc, file, line, ok := runtime.Caller(1); ok {
 		file = file[strings.LastIndex(file, "/")+1:]
 		funcName := runtime.FuncForPC(pc).Name()
@@ -182,7 +182,7 @@ func generateWarn(text, source, err string, dataCh chan []string) {
 			log.Fields{
 				"msg":    err,
 				"source": source,
-				"code":    fmt.Sprintf("%s:%s:%d", file, funcName, line),
+				"code":   fmt.Sprintf("%s:%s:%d", file, funcName, line),
 			}).Warn(text)
 	}
 
