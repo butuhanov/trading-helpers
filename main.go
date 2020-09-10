@@ -8,8 +8,6 @@ import (
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 
-	// "context"
-	// "time"
 	ps "github.com/butuhanov/trading-helpers/proto"
 )
 
@@ -31,7 +29,7 @@ func main() {
 		log.Fatal("could not get answer: ", err)
 	}
 
-	log.Println("Output:\n", string([]byte(resp.News)), err)
+	log.Println("Output:\n", string((resp.News)), err)
 
 	// a := "./news/example_data/sources.txt"
 	// b := "./news/example_data/keywords.txt"
