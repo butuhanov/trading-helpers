@@ -3,7 +3,6 @@ package news
 import (
 	"bufio"
 	"encoding/json"
-	"html"
 
 	// "log"
 	"os"
@@ -56,22 +55,42 @@ func parseSource() {
 	// TODO: function to parse source
 }
 
-func checkKeyWord(data []string, keyword string) []string {
+func checkKeyWord(data []string, keyword string) []byte {
+
+	// Возвращаем JSON в формате
+	// Ключевое слово
+	// Дата
+	// Источник
+	// Где найдено
+	// Заголовок
+	// Описание
+	// Ссылка
+
+	type Result struct {
+		Keyword     string
+		Date        string
+		Source      string
+		Place       string
+		Title       string
+		Description string
+		Link        string
+	}
+
 	// TODO: function to check keyword in the source
 	// parseSource()
 
-	log.Info("ищем:", keyword, " ====================================================")
+	log.Debug("ищем:", keyword, " ====================================================")
 
-	log.Info(data)
+	// log.Info(data)
 
-	var result = make([]string, 0)
+	var result = make([]byte, 0)
 
 	for _, el := range data {
 		var m News
 		err := json.Unmarshal([]byte(el), &m)
 		checkError(err)
 
-		log.Info(m)
+		// log.Info(m)
 
 		// log.Printf("len: %d, cap: %d arr:%v\n", len(knownNews), cap(knownNews), knownNews)
 
@@ -81,14 +100,24 @@ func checkKeyWord(data []string, keyword string) []string {
 			log.Info("При получении данных получена ошибка, пропускаем ", m.Link)
 		} else {
 			if strings.Contains(strings.ToLower(m.Title), keyword) {
-				log.Debug("Найдено", keyword, "в заголовке")
-				result = append(result, m.SourceTitle+"\n"+m.Date+"\n"+html.UnescapeString(m.Title)+":"+html.UnescapeString(m.Description)+"  ссылка:"+m.Link)
-				break
+				log.Debug("Найдено ", keyword, " в заголовке")
+
+				r := Result{keyword, m.Date, m.SourceTitle, "заголовок", m.Title, m.Description, m.Link}
+				b, err := json.Marshal(r)
+				checkError(err)
+
+				result = append(result, b...)
+
 			} else {
 				if strings.Contains(strings.ToLower(m.Description), keyword) {
-					log.Debug("Найдено", keyword, "в описании")
-					result = append(result, m.SourceTitle+"\n"+m.Date+"\n"+html.UnescapeString(m.Title)+":"+html.UnescapeString(m.Description)+"  ссылка:"+m.Link)
-					break
+					log.Debug("Найдено ", keyword, " в описании")
+
+					r := Result{keyword, m.Date, m.SourceTitle, "описание", m.Title, m.Description, m.Link}
+					b, err := json.Marshal(r)
+					checkError(err)
+
+					result = append(result, b...)
+
 				}
 			}
 		}
@@ -96,15 +125,6 @@ func checkKeyWord(data []string, keyword string) []string {
 		// Поиск ключевого слова в описании
 
 	}
-
-	b, err := json.Marshal(result)
-	checkError(err)
-
-	log.Info(string(b))
-
-	log.Info(result)
-
-	// log.Println(data[1])
 
 	return result
 
@@ -115,7 +135,7 @@ func checkKeyWord(data []string, keyword string) []string {
 // Входные параметры - массивы источников и ключевых слов
 func CheckNews(sourceFile, keywordFile string) ([]byte, error) {
 
-	var result = make([]string, 0)
+	var result = make([]byte, 0)
 
 	var sources, keywords []string
 
@@ -132,7 +152,7 @@ func CheckNews(sourceFile, keywordFile string) ([]byte, error) {
 
 	// dataCh := make(chan []string)  // канал для результатов запроса
 	dataCh := make(chan []string, len(sources)) // буферизованный
-	log.Debug("вместимость канала", cap(dataCh))
+	log.Debug("вместимость канала:", cap(dataCh))
 
 	wg := new(sync.WaitGroup)
 	wg.Add(cap(dataCh))
@@ -167,10 +187,10 @@ func CheckNews(sourceFile, keywordFile string) ([]byte, error) {
 
 	}
 
-	b, err := json.Marshal(result)
-	checkError(err)
+	// b, err := json.Marshal(result)
+	// checkError(err)
 
-	return b, nil
+	return result, nil
 
 }
 
