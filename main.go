@@ -34,5 +34,6 @@ func main() {
 	b := "./news/example_data/keywords.txt"
 
 	res, err := news.CheckNews(a, b)
+
 	log.Println(string(res), err)
 }

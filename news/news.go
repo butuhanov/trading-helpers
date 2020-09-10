@@ -19,10 +19,10 @@ var knownNews []string
 const maxNewsLength = 200
 
 // максимальная глубина поиска
-const maxDepth = 5
+const maxDepth = 20
 
 // таймаут запроса
-const httpGetTimeout = 3
+const httpGetTimeout = 4
 
 func init() {
 	// Log as JSON instead of the default ASCII formatter.
@@ -186,9 +186,6 @@ func CheckNews(sourceFile, keywordFile string) ([]byte, error) {
 		result = append(result, checkKeyWord(data, keyword)...)
 
 	}
-
-	// b, err := json.Marshal(result)
-	// checkError(err)
 
 	return result, nil
 
