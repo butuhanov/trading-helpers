@@ -1,0 +1,24 @@
+name: deploy to remote server
+on: [push]
+jobs:
+
+  deploy_zip:
+    name: deploy to remote server
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go-version: [1.14.x]
+    steps:
+      - name: checkout source code
+        uses: actions/checkout@v1
+      - name: Install Go
+        uses: actions/setup-go@v1
+        with:
+          go-version: ${{ matrix.go-version }}
+      - name: Build binary
+        run: |
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -a -o moex_cli main.go 
+      - name: default deploy
+        run: |
+          scp moex_cli ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:${{ secrets.REMOTE_DIRECTORY }}
+        
