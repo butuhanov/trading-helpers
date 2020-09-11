@@ -33,10 +33,10 @@ func init() {
 	log.SetOutput(os.Stdout)
 
 	// Only log the warning severity or above.
-	log.SetLevel(log.InfoLevel)
+	log.SetLevel(log.ErrorLevel)
 	// log.SetLevel(log.DebugLevel)
 
-	log.SetReportCaller(true)
+	// log.SetReportCaller(true)
 
 	// log.SetFormatter(&log.TextFormatter{
 	// 	DisableColors: false,

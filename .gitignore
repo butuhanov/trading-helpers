@@ -18,6 +18,7 @@ vsws
 # environments
 .env
 example_*
+*.txt
 
 # AWS
 main.zip
