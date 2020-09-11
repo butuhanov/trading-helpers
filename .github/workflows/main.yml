@@ -18,7 +18,7 @@ jobs:
       - name: Build binary
         run: |
           CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -a -o moex_cli main.go 
-      - name: Create SSH key
+      - name: Deploy
         run: |
           mkdir -p ~/.ssh/
           echo "$SSH_PRIVATE_KEY" > ../private.key
