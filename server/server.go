@@ -21,8 +21,8 @@ func (s *NewsServiceServer) GetNews(ctx context.Context,
 	var err error
 	response := new(ps.LastNews)
 
-	a := "./news/example_data/sources.txt"
-	b := "./news/example_data/keywords.txt"
+	a := "sources.txt"
+	b := "keywords.txt"
 
 	res, err := news.CheckNews(a, b)
 
