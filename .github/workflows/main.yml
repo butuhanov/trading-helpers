@@ -31,5 +31,5 @@ jobs:
           SSH_KEY_PATH: ${{ github.workspace }}/../private.key
       - name: default deploy
         run: |
-          scp -i $SSH_KEY_PATH moex_cli ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:${{ secrets.REMOTE_DIRECTORY }}
+          scp -i "$SSH_KEY_PATH" moex_cli ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:${{ secrets.REMOTE_DIRECTORY }}
         
