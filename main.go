@@ -42,8 +42,8 @@ func main() {
 	res, err := news.CheckNews(*sources, *keywords)
 	if err != nil {
 		log.Warn("При выполнении операции произошла ошибка:", err)
+		fmt.Println("{error:", err, "}")
 	}
-
 
 	fmt.Println(string(res))
 

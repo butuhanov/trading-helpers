@@ -24,7 +24,7 @@ const maxNewsLength = 200
 const maxDepth = 20
 
 // таймаут запроса
-const httpGetTimeout = 4
+const httpGetTimeout = 5
 
 func init() {
 	// Log as JSON instead of the default ASCII formatter.
@@ -35,9 +35,9 @@ func init() {
 	log.SetOutput(os.Stdout)
 
 	// Only log the warning severity or above.
-	// log.SetLevel(log.ErrorLevel)
-	log.SetLevel(log.InfoLevel)
-	log.SetLevel(log.DebugLevel)
+	log.SetLevel(log.ErrorLevel)
+	// log.SetLevel(log.InfoLevel)
+	// log.SetLevel(log.DebugLevel)
 
 	// log.SetReportCaller(true)
 
