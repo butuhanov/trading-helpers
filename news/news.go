@@ -9,6 +9,8 @@ import (
 	"strings"
 	"sync"
 
+	"path/filepath"
+
 	log "github.com/sirupsen/logrus"
 )
 
@@ -33,8 +35,9 @@ func init() {
 	log.SetOutput(os.Stdout)
 
 	// Only log the warning severity or above.
-	log.SetLevel(log.ErrorLevel)
-	// log.SetLevel(log.DebugLevel)
+	// log.SetLevel(log.ErrorLevel)
+	log.SetLevel(log.InfoLevel)
+	log.SetLevel(log.DebugLevel)
 
 	// log.SetReportCaller(true)
 
@@ -134,6 +137,14 @@ func checkKeyWord(data []string, keyword string) []byte {
 // CheckNews возвращает вхождения ключевых слов в новостных источниках в виде массива
 // Входные параметры - массивы источников и ключевых слов
 func CheckNews(sourceFile, keywordFile string) ([]byte, error) {
+
+	log.Debug("Проверяем ", sourceFile, " и ", keywordFile)
+
+	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Debug("текущая директория", dir)
 
 	var result = make([]byte, 0)
 

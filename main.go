@@ -3,16 +3,23 @@ package main
 import (
 	// "context"
 	// "time"
+	"flag"
 	"fmt"
+
 	// "github.com/butuhanov/trading-helpers/server"
 	"github.com/butuhanov/trading-helpers/news"
-	// log "github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	// "google.golang.org/grpc"
-
 	// ps "github.com/butuhanov/trading-helpers/proto"
 )
 
 func main() {
+
+	var sources = flag.String("sources", "sources.txt", "The 'sources' option value")
+	var keywords = flag.String("keywords", "keywords.txt", "The 'keywords' option value")
+
+	// parse flag's options
+	flag.Parse()
 
 	// go server.StartServer()
 
@@ -32,10 +39,12 @@ func main() {
 
 	// log.Println("Output:\n", string((resp.News)), err)
 
-	a := "./sources.txt"
-	b := "./keywords.txt"
+	res, err := news.CheckNews(*sources, *keywords)
+	if err != nil {
+		log.Warn("При выполнении операции произошла ошибка:", err)
+	}
 
-	res, _ := news.CheckNews(a, b)
 
 	fmt.Println(string(res))
+
 }
