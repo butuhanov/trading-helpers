@@ -110,6 +110,7 @@ func checkKeyWord(data []string, keyword string) []byte {
 				checkError(err)
 
 				result = append(result, b...)
+				result = append(result, ',')
 
 			} else {
 				if strings.Contains(strings.ToLower(m.Description), keyword) {
@@ -120,6 +121,7 @@ func checkKeyWord(data []string, keyword string) []byte {
 					checkError(err)
 
 					result = append(result, b...)
+					result = append(result, ',')
 
 				}
 			}
