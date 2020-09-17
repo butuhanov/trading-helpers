@@ -6,6 +6,7 @@ import (
 
 	"flag"
 	"fmt"
+	"strings"
 
 	// "github.com/butuhanov/trading-helpers/server"
 	"github.com/butuhanov/trading-helpers/news"
@@ -46,7 +47,14 @@ func main() {
 		fmt.Println("{error:", err, "}")
 	}
 
-	fmt.Printf("%v", string(res))
+	fmt.Printf("%v", trimSuffix(string(res), ","))
 
 	// fmt.Println(string(res))
+}
+
+func trimSuffix(s, suffix string) string {
+	if strings.HasSuffix(s, suffix) {
+		s = s[:len(s)-len(suffix)]
+	}
+	return s
 }
