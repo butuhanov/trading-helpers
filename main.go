@@ -3,6 +3,7 @@ package main
 import (
 	// "context"
 	// "time"
+
 	"flag"
 	"fmt"
 
@@ -45,6 +46,7 @@ func main() {
 		fmt.Println("{error:", err, "}")
 	}
 
-	fmt.Println(string(res))
+	fmt.Printf("%v\n", string(res))
 
+	// fmt.Println(string(res))
 }
