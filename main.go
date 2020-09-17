@@ -46,7 +46,7 @@ func main() {
 		fmt.Println("{error:", err, "}")
 	}
 
-	fmt.Printf("[%v]", string(res))
+	fmt.Printf("%v", string(res))
 
 	// fmt.Println(string(res))
 }
