@@ -27,7 +27,11 @@ message LastNews {
     bytes news = 2;
 }
 
-message MessageParams {}
+message MessageParams {
+string sources = 3;
+string keywords = 4;
+
+}
 
 service NewsService {
     rpc GetNews(MessageParams) returns (LastNews) {}
