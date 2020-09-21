@@ -33,7 +33,7 @@ func main() {
 	client := ps.NewNewsServiceClient(conn)
 
 	resp, err := client.GetNews(context.Background(),
-		&ps.MessageParams{})
+		&ps.MessageParams{Sources: *sources, Keywords: *keywords})
 
 	if err != nil {
 		log.Fatal("could not get answer: ", err)
