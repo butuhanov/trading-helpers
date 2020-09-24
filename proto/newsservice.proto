@@ -22,18 +22,6 @@ import "google/api/annotations.proto";
 
 // protoc -I proto proto/newsservice.proto -I${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway --grpc-gateway_out=logtostderr=true:. --go_out=plugins=grpc:proto/
 
-protoc -IC:\dev\bin\protoc-3.5.1\include -I. -I%GOPATH%\src -I%GOPATH%\src\github.com\grpc-ecosystem\grpc-gateway\third_party\googleapis --go_out=plugins=grpc:. .\my-proto\my-service.proto
-
-protoc -IC:\dev\bin\protoc-3.5.1\include -I. -I%GOPATH%\src -I%GOPATH%\src\github.com\grpc-ecosystem\grpc-gateway\third_party\googleapis --grpc-gateway_out=logtostderr=true:. \my-proto\my-service.proto
-
-protoc -I/usr/local/include -I. \
-  -I$GOPATH/src \
-  -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis \
-  --grpc-gateway_out=logtostderr=true:. \
-  library.proto
-
-  
-
 // >protoc -I proto proto/newsservice.proto --go_out=plugins=grpc:proto/
 // WARNING: Missing 'go_package' option in "newsservice.proto",
 // please specify it with the full Go package path as a future release of protoc-gen-go will require this be specified.
