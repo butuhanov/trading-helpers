@@ -4,12 +4,11 @@ package news;
 
 import "google/api/annotations.proto";
 
+
 // > go get -u google.golang.org/grpc
 
 // > go get -u github.com/golang/protobuf/protoc-gen-go
 
-// installprotoc-gen-grpc-gatewayplugin:
-// go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
 
 // > sudo apt  install protobuf-compiler
 // ...
@@ -27,6 +26,11 @@ import "google/api/annotations.proto";
 // please specify it with the full Go package path as a future release of protoc-gen-go will require this be specified.
 // See https://developers.google.com/protocol-buffers/docs/reference/go-generated#package for more information.
 
+// REST
+// go install github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway github.com/golang/protobuf/protoc-gen-go
+
+// protoc --proto_path=proto -I proto proto/newsservice.proto -I. -I${GOPATH}/src -I${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis -I${GOPATH}/src/github.com/grpc-ecosystem/grpc-gateway --grpc-gateway_out=logtostderr=true:./proto --go_out=plugins=grpc:./proto
+
 
 
 message LastNews {
@@ -42,6 +46,7 @@ string keywords = 2;
 
 service NewsService {
     rpc GetNews(MessageParams) returns (LastNews) {
-        option (google.api.http) = { get: "/v1/news/last" body: "*" };
+        option (google.api.http) = { get: "/v1/news/last" };
+        // option (google.api.http) = { post: "/v1/news/last" body: "*" };
     }
 }
