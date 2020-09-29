@@ -4,6 +4,10 @@ import (
 	"context"
 	"net"
 
+	// "os"
+	// "os/signal"
+	// "time"
+
 	log "github.com/sirupsen/logrus"
 
 	"github.com/butuhanov/trading-helpers/news"
@@ -51,11 +55,15 @@ func StartServer() {
 		log.Fatal("Unable to create grpc listener:", err)
 	}
 
+
 	log.Debug("start server serve listener...")
 
 	if err = server.Serve(listener); err != nil {
 		log.Fatal("Unable to start server:", err)
 	}
+
+
+
 
 	log.Info("server started...")
 }
