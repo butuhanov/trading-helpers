@@ -2,16 +2,12 @@ package main
 
 import (
 	"context"
-	"fmt"
-	"io"
 
 	// "time"
-	"golang.org/x/net/websocket"
 
 	// "io"
 	"net"
 	"net/http"
-	"net/rpc"
 
 	"flag"
 	// "fmt"
@@ -19,88 +15,15 @@ import (
 
 	// "github.com/butuhanov/trading-helpers/server"
 
-	// ps "github.com/butuhanov/trading-helpers/proto"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"github.com/soheilhy/cmux"
-	"google.golang.org/grpc"
 
-	grpchello "google.golang.org/grpc/examples/helloworld/helloworld"
+	"google.golang.org/grpc"
 
 	"github.com/butuhanov/trading-helpers/news"
 	ps "github.com/butuhanov/trading-helpers/proto"
 )
-
-
-type exampleHTTPHandler struct{}
-
-func (h *exampleHTTPHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	log.Debug("ServeHTTP...")
-    fmt.Fprintf(w, "example http response\n")
-}
-
-func serveHTTP(l net.Listener) {
-	log.Debug("ServeHTTP-2...")
-    s := &http.Server{
-        Handler: &exampleHTTPHandler{},
-    }
-    if err := s.Serve(l); err != cmux.ErrListenerClosed {
-        panic(err)
-    }
-}
-
-func EchoServer(ws *websocket.Conn) {
-	log.Debug("EchoServer...")
-    if _, err := io.Copy(ws, ws); err != nil {
-        panic(err)
-    }
-}
-
-func serveWS(l net.Listener) {
-	log.Debug("serveWS...")
-    s := &http.Server{
-        Handler: websocket.Handler(EchoServer),
-    }
-    if err := s.Serve(l); err != cmux.ErrListenerClosed {
-        panic(err)
-    }
-}
-
-type ExampleRPCRcvr struct{}
-
-func (r *ExampleRPCRcvr) Cube(i int, j *int) error {
-	log.Debug("Cube...")
-    *j = i * i
-    return nil
-}
-
-func serveRPC(l net.Listener) {
-	log.Debug("serveRPC...")
-    s := rpc.NewServer()
-    if err := s.Register(&ExampleRPCRcvr{}); err != nil {
-        panic(err)
-    }
-    for {
-        conn, err := l.Accept()
-        if err != nil {
-            if err != cmux.ErrListenerClosed {
-                panic(err)
-            }
-            return
-        }
-        go s.ServeConn(conn)
-    }
-}
-
-type grpcServer struct{}
-
-func (s *grpcServer) SayHello(ctx context.Context, in *grpchello.HelloRequest) (
-    *grpchello.HelloReply, error) {
-			log.Debug("SayHello...")
-    return &grpchello.HelloReply{Message: "Hello " + in.Name + " from cmux"}, nil
-}
-
 type NewsServiceServer struct {
 }
 
@@ -127,19 +50,6 @@ func (s *NewsServiceServer) GetNews(ctx context.Context,
 	return response, err
 }
 
-func serveGRPC(l net.Listener) {
-	log.Debug("serveGRPC...")
-    grpcs := grpc.NewServer()
-		// grpchello.RegisterGreeterServer(grpcs, &grpcServer{})
-		ps.RegisterNewsServiceServer(grpcs, &NewsServiceServer{})
-    if err := grpcs.Serve(l); err != cmux.ErrListenerClosed {
-        panic(err)
-		}
-
-
-
-}
-
 func main() {
 
 	// var sources = flag.String("sources", "sources.txt", "The 'sources' option value")
@@ -159,100 +69,6 @@ func main() {
 
 
 
-	// log.Debug("start HTTP server...")
-
-	// helloHandler := func(w http.ResponseWriter, req *http.Request) {
-	// 	io.WriteString(w, "Hello, world!\n")
-	// }
-
-	// http.HandleFunc("/hello", helloHandler)
-
-	// log.Fatal(http.ListenAndServe(":8082", nil))
-
-
-	// resp, err := client.GetNews(context.Background(),
-	// 	&ps.MessageParams{Sources: *sources, Keywords: *keywords})
-
-	// if err != nil {
-	// 	log.Fatal("could not get answer: ", err)
-	// }
-
-	// log.Println("Output:\n", string((resp.News)), err)
-
-
-	// res, err := news.CheckNews(*sources, *keywords)
-	// if err != nil {
-	// 	log.Warn("При выполнении операции произошла ошибка:", err)
-	// 	fmt.Println("{error:", err, "}")
-	// }
-
-	// fmt.Printf("%v", trimSuffix(string(res), ","))
-
-	// fmt.Println(string(res))
-
-// Create the main listener.
-// l, err := net.Listen("tcp", ":23456")
-// if err != nil {
-// 	log.Fatal(err)
-// }
-
-// // Create a cmux.
-// m := cmux.New(l)
-
-// // Match connections in order:
-// // First grpc, then HTTP, and otherwise Go RPC/TCP.
-// grpcL := m.Match(cmux.HTTP2HeaderField("content-type", "application/grpc"))
-// httpL := m.Match(cmux.HTTP1Fast())
-// trpcL := m.Match(cmux.Any()) // Any means anything that is not yet matched.
-
-// // Create your protocol servers.
-// grpcS := grpc.NewServer()
-// // grpchello.RegisterGreeterServer(grpcS, &server{})
-// ps.RegisterNewsServiceServer(grpcS, &NewsServiceServer{})
-
-// httpS := &http.Server{
-// 	Handler: &exampleHTTPHandler{},
-// }
-
-// trpcS := rpc.NewServer()
-// trpcS.Register(&ExampleRPCRcvr{})
-
-// // Use the muxed listeners for your servers.
-// go grpcS.Serve(grpcL)
-// go httpS.Serve(httpL)
-// go trpcS.Accept(trpcL)
-
-// // Start serving!
-// m.Serve()
-
-
-	// // We first match the connection against HTTP2 fields. If matched, the
-	// // connection will be sent through the "grpcl" listener.
-	// grpcl := m.Match(cmux.HTTP2HeaderFieldPrefix("content-type", "application/grpc"))
-
-	// //Otherwise, we match it againts a websocket upgrade request.
-	// wsl := m.Match(cmux.HTTP1HeaderField("Upgrade", "websocket"))
-
-	// // Otherwise, we match it againts HTTP1 methods. If matched,
-	// // it is sent through the "httpl" listener.
-	// httpl := m.Match(cmux.HTTP1Fast())
-	// // If not matched by HTTP, we assume it is an RPC connection.
-	// rpcl := m.Match(cmux.Any())
-
-	// // Then we used the muxed listeners.
-	// go serveGRPC(grpcl)
-	// go serveWS(wsl)
-	// go serveHTTP(httpl)
-	// go serveRPC(rpcl)
-
-	// if err := m.Serve(); !strings.Contains(err.Error(), "use of closed network connection") {
-	// 		panic(err)
-	// }
-
-	// Start serving!
-// m.Serve()
-
-
 log.Info("starting grpc server...")
 
 	server := grpc.NewServer()
@@ -263,16 +79,6 @@ log.Info("starting grpc server...")
 	listener, err := net.Listen("tcp", ":8080")
 	go server.Serve(listener)
 
-
-	// listener, err := net.Listen("tcp", ":8080")
-	// if err != nil {
-	// 	log.Fatal("Unable to create grpc listener:", err)
-	// }
-	// log.Debug("start server serve listener...")
-
-	// if err = server.Serve(listener); err != nil {
-	// 	log.Fatal("Unable to start server:", err)
-	// }
 
 	log.Info("starting http server...")
 var (
@@ -299,41 +105,6 @@ ctx := context.Background()
 
   // Start HTTP server (and proxy calls to gRPC server endpoint)
 	log.Fatal(http.ListenAndServe("127.0.0.1:23456", mux))
-
-//   // Start HTTP server (and proxy calls to gRPC server endpoint)
-//   return http.ListenAndServe(":8081", mux)
-
-// gw := runtime.NewServeMux()
-
-// opts := []grpc.DialOption{grpc.WithInsecure()}
-
-// err := ps.RegisterNewsServiceHandlerFromEndpoint(ctx, gw, "127.0.0.1:23456", opts)
-//     if err != nil {
-//         log.Fatal(err)
-//     }
-
-
-
-// mux := http.NewServeMux()
-// 		mux.Handle("/", gw)
-// 		log.Fatal(http.ListenAndServe("127.0.0.1:23456", mux))
-
-
-
-
-	// 	conn, _ := grpc.Dial("127.0.0.1:23456", grpc.WithInsecure())
-
-	// client := ps.NewNewsServiceClient(conn)
-
-
-	// 	resp, err := client.GetNews(context.Background(),
-	// 	&ps.MessageParams{Sources: *sources, Keywords: *keywords})
-
-	// 	log.Println("Output:\n", string((resp.News)), err)
-
-	// if err != nil {
-	// 	log.Fatal("could not get answer: ", err)
-	// }
 
 
 }
