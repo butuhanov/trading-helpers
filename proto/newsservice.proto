@@ -46,7 +46,7 @@ string keywords = 2;
 
 service NewsService {
     rpc GetNews(MessageParams) returns (LastNews) {
-        option (google.api.http) = { get: "/v1/news/last" };
-        // option (google.api.http) = { post: "/v1/news/last" body: "*" };
+        // option (google.api.http) = { get: "/v1/news/last" };
+        option (google.api.http) = { post: "/v1/news/last" body: "*" };
     }
 }
