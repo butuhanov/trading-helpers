@@ -7,9 +7,9 @@ import (
 )
 
 func ExampleCheckNews() {
-	a := "./example_data/sources.txt"
-	b := "./example_data/keywords.txt"
+	a := "sources.txt"
+	b := "keywords.txt"
 	res, err := news.CheckNews(a, b)
 	fmt.Println(string(res), err)
-	// Output:[] open ./example_data/sources.txt: no such file or directory
+	// Output:open sources.txt: no such file or directory
 }
