@@ -4,6 +4,10 @@ import (
 	"context"
 	"net"
 
+	"net/http"
+
+	"flag"
+
 	// "os"
 	// "os/signal"
 	// "time"
@@ -14,13 +18,18 @@ import (
 	"google.golang.org/grpc"
 
 	ps "github.com/butuhanov/trading-helpers/proto"
+
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 )
 
 type NewsServiceServer struct {
 }
 
+
 func (s *NewsServiceServer) GetNews(ctx context.Context,
 	req *ps.MessageParams) (*ps.LastNews, error) {
+
+		log.Debug("GetNews...")
 
 	var err error
 	response := new(ps.LastNews)
@@ -39,31 +48,46 @@ func (s *NewsServiceServer) GetNews(ctx context.Context,
 	return response, err
 }
 
+
 func StartServer() {
 	log.Info("starting server...")
+
+	log.Info("starting grpc server...")
 
 	server := grpc.NewServer()
 
 	instance := new(NewsServiceServer)
 
 	ps.RegisterNewsServiceServer(server, instance)
-
-	log.Debug("creating grpc listener...")
-
 	listener, err := net.Listen("tcp", ":8080")
-	if err != nil {
-		log.Fatal("Unable to create grpc listener:", err)
-	}
+	go server.Serve(listener)
 
 
-	log.Debug("start server serve listener...")
+	log.Info("starting http server...")
+var (
+  // command-line options:
+  // gRPC server endpoint
+  grpcServerEndpoint = flag.String("grpc-server-endpoint",  "localhost:8080", "gRPC server endpoint")
+)
 
-	if err = server.Serve(listener); err != nil {
-		log.Fatal("Unable to start server:", err)
-	}
+ctx := context.Background()
+  ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
 
 
+	// Register gRPC server endpoint
+  // Note: Make sure the gRPC server is running properly and accessible
+  mux := runtime.NewServeMux()
+  opts := []grpc.DialOption{grpc.WithInsecure()}
+	// err := gw.RegisterYourServiceHandlerFromEndpoint(ctx, mux,  *grpcServerEndpoint, opts)
+	err = ps.RegisterNewsServiceHandlerFromEndpoint(ctx, mux,  *grpcServerEndpoint, opts)
+  if err != nil {
+    log.Fatal(err)
+  }
 
+
+  // Start HTTP server (and proxy calls to gRPC server endpoint)
+	log.Fatal(http.ListenAndServe("127.0.0.1:23456", mux))
 
 	log.Info("server started...")
 }
