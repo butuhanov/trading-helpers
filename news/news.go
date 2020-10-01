@@ -138,7 +138,7 @@ func checkKeyWord(data []string, keyword string) []byte {
 
 // CheckNews возвращает вхождения ключевых слов в новостных источниках в виде массива
 // Входные параметры - массивы источников и ключевых слов
-func CheckNews(sourceFile, keywordFile string) ([]byte, error) {
+func CheckNews(sourceFile, keywordFile string) (string, error) {
 
 	log.Debug("Проверяем ", sourceFile, " и ", keywordFile)
 
@@ -154,11 +154,11 @@ func CheckNews(sourceFile, keywordFile string) ([]byte, error) {
 
 	sourcesFromFile, err := readDataFromFile(sourceFile)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	keywordsFromFile, err := readDataFromFile(keywordFile)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	sources = append(sources, sourcesFromFile...)
 	keywords = append(keywords, keywordsFromFile...)
@@ -200,7 +200,9 @@ func CheckNews(sourceFile, keywordFile string) ([]byte, error) {
 
 	}
 
-	return result, nil
+	// log.Debug(result)
+
+	return string(result), nil
 
 }
 

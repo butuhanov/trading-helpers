@@ -43,7 +43,7 @@ func (s *NewsServiceServer) GetNews(ctx context.Context,
 
 	// response.News = []byte(stringByte)
 
-	response.News = []byte(res)
+	response.News = res
 
 	return response, err
 }
