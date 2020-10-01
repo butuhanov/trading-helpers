@@ -37,16 +37,6 @@ type Channel struct {
 	Items       []Item `xml:"item"`
 }
 
-type News struct {
-	SourceTitle string
-	Title       string
-	Description string
-	Link        string
-	Date        string
-	Hash        string
-	Error       string
-}
-
 func readRSS(source string, wg *sync.WaitGroup, dataCh chan []string) error {
 
 	defer wg.Done()

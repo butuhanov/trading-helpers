@@ -4,6 +4,8 @@ import (
 	"bufio"
 	"encoding/json"
 
+	"bytes"
+
 	// "log"
 	"os"
 	"strings"
@@ -25,6 +27,40 @@ const maxDepth = 20
 
 // таймаут запроса
 const httpGetTimeout = 5
+
+	// Возвращаем JSON в формате
+	// Ключевое слово
+	// Дата
+	// Источник
+	// Где найдено
+	// Заголовок
+	// Описание
+	// Ссылка
+
+
+// Новости
+type News struct {
+	SourceTitle string
+	Title       string
+	Description string
+	Link        string
+	Date        string
+	Hash        string
+	Error       string
+}
+
+	// Результаты
+	type Result struct {
+		Keyword     string `json:"keyword"`
+		Date        string `json:"date"`
+		Source      string `json:"source"`
+		Place       string `json:"place"`
+		Title       string `json:"title"`
+		Description string `json:"description"`
+		Link        string `json:"link"`
+	}
+
+	type Results []Result
 
 func init() {
 	// Log as JSON instead of the default ASCII formatter.
@@ -58,26 +94,9 @@ func parseSource() {
 	// TODO: function to parse source
 }
 
-func checkKeyWord(data []string, keyword string) []byte {
+func checkKeyWord(data []string, keyword string) Results {
 
-	// Возвращаем JSON в формате
-	// Ключевое слово
-	// Дата
-	// Источник
-	// Где найдено
-	// Заголовок
-	// Описание
-	// Ссылка
 
-	type Result struct {
-		Keyword     string
-		Date        string
-		Source      string
-		Place       string
-		Title       string
-		Description string
-		Link        string
-	}
 
 	// TODO: function to check keyword in the source
 	// parseSource()
@@ -87,6 +106,9 @@ func checkKeyWord(data []string, keyword string) []byte {
 	// log.Info(data)
 
 	var result = make([]byte, 0)
+
+	var resultStruct Results
+
 
 	for _, el := range data {
 		var m News
@@ -109,6 +131,8 @@ func checkKeyWord(data []string, keyword string) []byte {
 				b, err := json.Marshal(r)
 				checkError(err)
 
+				resultStruct = append(resultStruct, r)
+
 				result = append(result, b...)
 				result = append(result, ',')
 
@@ -119,6 +143,8 @@ func checkKeyWord(data []string, keyword string) []byte {
 					r := Result{keyword, m.Date, m.SourceTitle, "описание", m.Title, m.Description, m.Link}
 					b, err := json.Marshal(r)
 					checkError(err)
+
+					resultStruct = append(resultStruct, r)
 
 					result = append(result, b...)
 					result = append(result, ',')
@@ -131,16 +157,23 @@ func checkKeyWord(data []string, keyword string) []byte {
 
 	}
 
-	return result
+	// log.Debug(resultStruct)
+
+	return resultStruct
 
 	// return strconv.Itoa(len(data))
 }
 
 // CheckNews возвращает вхождения ключевых слов в новостных источниках в виде массива
 // Входные параметры - массивы источников и ключевых слов
-func CheckNews(sourceFile, keywordFile string) (string, error) {
+func CheckNews(sourceFile, keywordFile string) (Results, error) {
+
 
 	log.Debug("Проверяем ", sourceFile, " и ", keywordFile)
+
+	var resultStruct Results
+
+	// resultStruct := make(Results, 0)
 
 	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err != nil {
@@ -148,17 +181,17 @@ func CheckNews(sourceFile, keywordFile string) (string, error) {
 	}
 	log.Debug("текущая директория", dir)
 
-	var result = make([]byte, 0)
+	// var result = make([]byte, 0)
 
 	var sources, keywords []string
 
 	sourcesFromFile, err := readDataFromFile(sourceFile)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	keywordsFromFile, err := readDataFromFile(keywordFile)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	sources = append(sources, sourcesFromFile...)
 	keywords = append(keywords, keywordsFromFile...)
@@ -196,13 +229,35 @@ func CheckNews(sourceFile, keywordFile string) (string, error) {
 	// log.Printf("данные:%v", data)
 
 	for _, keyword := range keywords { // перебираем все ключевые слова
-		result = append(result, checkKeyWord(data, keyword)...)
+
+		resultStruct = append(resultStruct, checkKeyWord(data, keyword)...)
+
+		// result = append(result, checkKeyWord(data, keyword)...)
 
 	}
 
-	// log.Debug(result)
 
-	return string(result), nil
+
+	// b, err := json.Marshal(resultStruct)
+	// b, err := JSONMarshal(resultStruct, true)
+
+	// 				checkError(err)
+
+
+	// for _, el := range result {
+	// 	// var m Result
+	// 	// err := json.Unmarshal([]byte(el), &m)
+	// 	// checkError(err)
+
+	// 	log.Debug(string(el))
+
+	// }
+
+	// log.Debug(b)
+
+	// log.Debug(string(b))
+
+	return resultStruct, nil
 
 }
 
@@ -239,4 +294,14 @@ func readDataFromFile(source string) ([]string, error) {
 
 	return result, nil
 
+}
+
+
+func JSONMarshal(v interface{}, backslashEscape bool) ([]byte, error) {
+	b, err := json.Marshal(v)
+
+	if backslashEscape {
+			b = bytes.Replace(b, []byte(`\\`), []byte(`\`), -1)
+	}
+	return b, err
 }

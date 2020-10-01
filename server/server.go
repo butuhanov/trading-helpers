@@ -8,6 +8,7 @@ import (
 
 	"flag"
 
+	"encoding/json"
 	// "os"
 	// "os/signal"
 	// "time"
@@ -43,7 +44,13 @@ func (s *NewsServiceServer) GetNews(ctx context.Context,
 
 	// response.News = []byte(stringByte)
 
-	response.News = res
+	result, err := json.Marshal(res)
+
+	checkError(err)
+
+	response.News = string(result)
+
+	log.Debug(response.News)
 
 	return response, err
 }
@@ -92,4 +99,12 @@ ctx := context.Background()
 	// check example curl -X POST http://127.0.0.1:23456/v1/news/last -d '{"sources":"news/example_data/sources.txt", "keywords":"news/example_data/keywords.txt"}'
 
 	log.Info("server started...")
+}
+
+
+// Стандартная обработка ошибок
+func checkError(err error) {
+	if err != nil {
+		log.Warn("При выполнении операции произошла ошибка:", err)
+	}
 }

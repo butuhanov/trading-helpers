@@ -34,8 +34,7 @@ import "google/api/annotations.proto";
 
 
 message LastNews {
-    string sample = 1;
-    string news = 2;
+    string news = 1;
 }
 
 message MessageParams {
