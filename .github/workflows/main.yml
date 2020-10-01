@@ -24,7 +24,9 @@ jobs:
           echo "$SSH_PRIVATE_KEY" > ../private.key
           sudo chmod 600 ../private.key
           echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          systemctl --host ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} stop moex.service
           scp -i "$SSH_KEY_PATH" moex_cli ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:${{ secrets.REMOTE_DIRECTORY }}
+          systemctl --host ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} start moex.service
         shell: bash
         env:
           SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
