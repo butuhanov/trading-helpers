@@ -24,7 +24,7 @@ jobs:
           echo "$SSH_PRIVATE_KEY" > ../private.key
           sudo chmod 600 ../private.key
           echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts   
-          ssh -i "$SSH_KEY_PATH" ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} mv moex_cli moex_cli.old       
+          ssh -i "$SSH_KEY_PATH" ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} mv ${{ secrets.REMOTE_DIRECTORY }}/moex_cli ${{ secrets.REMOTE_DIRECTORY }}/moex_cli.old       
           scp -i "$SSH_KEY_PATH" moex_cli ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:${{ secrets.REMOTE_DIRECTORY }}          
         shell: bash
         env:
