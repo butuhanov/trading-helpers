@@ -59,7 +59,7 @@ func StartServer() {
 	instance := new(NewsServiceServer)
 
 	ps.RegisterNewsServiceServer(server, instance)
-	listener, err := net.Listen("tcp", ":8080")
+	listener, err := net.Listen("tcp", "localhost:8080")
 	go server.Serve(listener)
 
 
@@ -87,7 +87,9 @@ ctx := context.Background()
 
 
   // Start HTTP server (and proxy calls to gRPC server endpoint)
-	log.Fatal(http.ListenAndServe("127.0.0.1:23456", mux))
+	log.Fatal(http.ListenAndServe("localhost:23456", mux))
+
+	// check example curl -X POST http://127.0.0.1:23456/v1/news/last -d '{"sources":"news/example_data/sources.txt", "keywords":"news/example_data/keywords.txt"}'
 
 	log.Info("server started...")
 }
