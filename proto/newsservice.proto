@@ -35,7 +35,7 @@ import "google/protobuf/struct.proto";
 
 
 message LastNews {
-google.protobuf.Struct news = 1;
+repeated google.protobuf.Struct news = 1;
 }
 
 message MessageParams {

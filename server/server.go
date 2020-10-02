@@ -48,7 +48,11 @@ type NewsServiceServer struct {
 		Link        string `json:"link"`
 	}
 
-	type Results []Result
+
+	type Results struct {
+    Results []Result `json:"results"`
+}
+
 
 
 func (s *NewsServiceServer) GetNews(ctx context.Context,
@@ -84,27 +88,36 @@ func (s *NewsServiceServer) GetNews(ctx context.Context,
 	// response.News, err = strconv.Unquote(string(result))
 
 	resStruct := []Result{}
+	// resStruct := Results{}
 
 	jsonErr := json.Unmarshal(result, &resStruct)
 
-	log.Debug(resStruct[0])
+	log.Debug(len(resStruct))
+
+	// for i,v:=range(resStruct){
+	// 	log.Debug(i, v)
+	// }
+
 
 	if jsonErr != nil {
 			log.Fatal(jsonErr)
 	}
 
-	cc, _ := json.Marshal(resStruct[0])
 
-	var bb bytes.Buffer
-            bb.Write(cc)
+	data :=&_struct.Struct{Fields: make(map[string]*_struct.Value)}
 
-	data := &_struct.Struct{Fields: make(map[string]*_struct.Value)}
-            if err := (&jsonpb.Unmarshaler{}).Unmarshal(&bb, data); err != nil {
-                log.Fatal(err)
-            }
 
-	response.News = data
+	for i,v:=range(resStruct){
+		log.Debug(i, v)
+		cc, _ := json.Marshal(v)
+		var bb bytes.Buffer
+		bb.Write(cc)
+		if err := (&jsonpb.Unmarshaler{}).Unmarshal(&bb, data); err != nil {
+			log.Fatal(err)
+	}
 
+		response.News = append(response.News, data)
+	}
 
 
 	// checkError(err)
