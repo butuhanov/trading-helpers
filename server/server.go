@@ -8,7 +8,15 @@ import (
 
 	"flag"
 
+	"strconv"
+	"strings"
+
+	"bytes"
+
 	"encoding/json"
+
+	"github.com/golang/protobuf/jsonpb"
+
 	// "os"
 	// "os/signal"
 	// "time"
@@ -21,10 +29,26 @@ import (
 	ps "github.com/butuhanov/trading-helpers/proto"
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+
+	_struct "github.com/golang/protobuf/ptypes/struct"
 )
 
 type NewsServiceServer struct {
 }
+
+
+	// Результаты
+	type Result struct {
+		Keyword     string `json:"keyword"`
+		Date        string `json:"date"`
+		Source      string `json:"source"`
+		Place       string `json:"place"`
+		Title       string `json:"title"`
+		Description string `json:"description"`
+		Link        string `json:"link"`
+	}
+
+	type Results []Result
 
 
 func (s *NewsServiceServer) GetNews(ctx context.Context,
@@ -44,13 +68,49 @@ func (s *NewsServiceServer) GetNews(ctx context.Context,
 
 	// response.News = []byte(stringByte)
 
+
 	result, err := json.Marshal(res)
 
 	checkError(err)
 
-	response.News = string(result)
+	//  log.Debug(string(result))
 
-	log.Debug(response.News)
+	// for i, v := range result {
+
+	// 	log.Debug(i, v)
+
+	// }
+
+	// response.News, err = strconv.Unquote(string(result))
+
+	resStruct := []Result{}
+
+	jsonErr := json.Unmarshal(result, &resStruct)
+
+	log.Debug(resStruct[0])
+
+	if jsonErr != nil {
+			log.Fatal(jsonErr)
+	}
+
+	cc, _ := json.Marshal(resStruct[0])
+
+	var bb bytes.Buffer
+            bb.Write(cc)
+
+	data := &_struct.Struct{Fields: make(map[string]*_struct.Value)}
+            if err := (&jsonpb.Unmarshaler{}).Unmarshal(&bb, data); err != nil {
+                log.Fatal(err)
+            }
+
+	response.News = data
+
+
+
+	// checkError(err)
+
+	log.Debug(response)
+
 
 	return response, err
 }
@@ -82,6 +142,7 @@ ctx := context.Background()
 	defer cancel()
 
 
+
 	// Register gRPC server endpoint
   // Note: Make sure the gRPC server is running properly and accessible
   mux := runtime.NewServeMux()
@@ -107,4 +168,13 @@ func checkError(err error) {
 	if err != nil {
 		log.Warn("При выполнении операции произошла ошибка:", err)
 	}
+}
+
+
+func convert( b []byte ) string {
+	s := make([]string,len(b))
+	for i := range b {
+			s[i] = strconv.Itoa(int(b[i]))
+	}
+	return strings.Join(s,",")
 }

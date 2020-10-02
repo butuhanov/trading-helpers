@@ -3,6 +3,7 @@ syntax = "proto3";
 package news;
 
 import "google/api/annotations.proto";
+import "google/protobuf/struct.proto";
 
 
 // > go get -u google.golang.org/grpc
@@ -34,7 +35,7 @@ import "google/api/annotations.proto";
 
 
 message LastNews {
-    string news = 1;
+google.protobuf.Struct news = 1;
 }
 
 message MessageParams {
