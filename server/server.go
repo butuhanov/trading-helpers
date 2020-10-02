@@ -122,7 +122,7 @@ func (s *NewsServiceServer) GetNews(ctx context.Context,
 
 	// checkError(err)
 
-	log.Debug(response)
+	// log.Debug(response)
 
 
 	return response, err

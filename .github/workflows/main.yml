@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go-version: [1.14.x]
+        go-version: [1.15.x]
     steps:
       - name: checkout source code
         uses: actions/checkout@v1
@@ -17,19 +17,17 @@ jobs:
           go-version: ${{ matrix.go-version }}
       - name: Build binary
         run: |
-          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -a -o moex_cli main.go 
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -a -o moex_cli main.go
       - name: Deploy
         run: |
           mkdir -p ~/.ssh/
           echo "$SSH_PRIVATE_KEY" > ../private.key
           sudo chmod 600 ../private.key
-          echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts   
+          echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
           ssh -i "$SSH_KEY_PATH" ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} mv ${{ secrets.REMOTE_DIRECTORY }}/moex_cli ${{ secrets.REMOTE_DIRECTORY }}/moex_cli.old -f
-          scp -i "$SSH_KEY_PATH" moex_cli ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:${{ secrets.REMOTE_DIRECTORY }}          
+          scp -i "$SSH_KEY_PATH" moex_cli ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:${{ secrets.REMOTE_DIRECTORY }}
         shell: bash
         env:
           SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
           SSH_KNOWN_HOSTS: ${{secrets.SSH_KNOWN_HOSTS}}
           SSH_KEY_PATH: ${{ github.workspace }}/../private.key
-    
-        
