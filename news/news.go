@@ -130,7 +130,7 @@ func checkKeyWord(data []string, keyword string) Results {
 			if strings.Contains(strings.ToLower(m.Title), keyword) {
 				log.Debug("Найдено ", keyword, " в заголовке")
 
-				r := Result{keyword, m.Date, m.SourceTitle, "заголовок", m.Title, m.Description, m.Link}
+				r := Result{keyword, m.Date, m.SourceTitle, "заголовок", m.Title, RemoveHtmlTags(m.Description), m.Link}
 				b, err := json.Marshal(r)
 				checkError(err)
 
@@ -143,7 +143,7 @@ func checkKeyWord(data []string, keyword string) Results {
 				if strings.Contains(strings.ToLower(m.Description), keyword) {
 					log.Debug("Найдено ", keyword, " в описании")
 
-					r := Result{keyword, m.Date, m.SourceTitle, "описание", m.Title, m.Description, m.Link}
+					r := Result{keyword, m.Date, m.SourceTitle, "описание", m.Title, RemoveHtmlTags(m.Description), m.Link}
 					b, err := json.Marshal(r)
 					checkError(err)
 
