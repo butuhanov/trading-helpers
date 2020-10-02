@@ -38,20 +38,20 @@ type NewsServiceServer struct {
 
 
 	// Результаты
-	type Result struct {
-		Keyword     string `json:"keyword"`
-		Date        string `json:"date"`
-		Source      string `json:"source"`
-		Place       string `json:"place"`
-		Title       string `json:"title"`
-		Description string `json:"description"`
-		Link        string `json:"link"`
-	}
+	// type Result struct {
+	// 	Keyword     string `json:"keyword"`
+	// 	Date        string `json:"date"`
+	// 	Source      string `json:"source"`
+	// 	Place       string `json:"place"`
+	// 	Title       string `json:"title"`
+	// 	Description string `json:"description"`
+	// 	Link        string `json:"link"`
+	// }
 
 
-	type Results struct {
-    Results []Result `json:"results"`
-}
+// 	type Results struct {
+//     NewsItem []Result `json:"news_item"`
+// }
 
 
 
@@ -72,44 +72,31 @@ func (s *NewsServiceServer) GetNews(ctx context.Context,
 
 	// response.News = []byte(stringByte)
 
+	resStruct := news.Results{}
 
-	result, err := json.Marshal(res)
 
-	checkError(err)
+	for _,v:=range(res){
+		// log.Debug(i, v)
 
-	//  log.Debug(string(result))
+		resStruct.NewsItem = append(resStruct.NewsItem, v)
 
-	// for i, v := range result {
+		result, err := json.Marshal(resStruct)
 
-	// 	log.Debug(i, v)
+		checkError(err)
 
-	// }
-
-	// response.News, err = strconv.Unquote(string(result))
-
-	resStruct := []Result{}
-	// resStruct := Results{}
 
 	jsonErr := json.Unmarshal(result, &resStruct)
 
-	log.Debug(len(resStruct))
-
-	// for i,v:=range(resStruct){
-	// 	log.Debug(i, v)
-	// }
-
 
 	if jsonErr != nil {
-			log.Fatal(jsonErr)
-	}
+		log.Fatal(jsonErr)
+}
 
 
-	data :=&_struct.Struct{Fields: make(map[string]*_struct.Value)}
 
+data :=&_struct.Struct{Fields: make(map[string]*_struct.Value)}
 
-	for _,v := range(resStruct){
-		// log.Debug(i, v)
-		cc, _ := json.Marshal(v)
+cc, _ := json.Marshal(resStruct)
 		var bb bytes.Buffer
 		bb.Write(cc)
 		if err := (&jsonpb.Unmarshaler{}).Unmarshal(&bb, data); err != nil {
@@ -117,7 +104,47 @@ func (s *NewsServiceServer) GetNews(ctx context.Context,
 	}
 
 		response.News = append(response.News, data)
+
+
 	}
+
+	// log.Debug(resStruct)
+
+	// result, err := json.Marshal(resStruct)
+
+	// 	checkError(err)
+
+
+	// response.News, err = strconv.Unquote(string(result))
+
+	// resStruct := []Result{}
+
+
+	// jsonErr := json.Unmarshal(result, &resStruct)
+
+	log.Debug(len(resStruct.NewsItem))
+
+	// for i,v:=range(resStruct){
+	// 	log.Debug(i, v)
+	// }
+
+
+
+
+	// data :=&_struct.Struct{Fields: make(map[string]*_struct.Value)}
+
+
+	// for _,v := range(resStruct.NewsItem){
+	// 	// log.Debug(i, v)
+	// 	cc, _ := json.Marshal(v)
+	// 	var bb bytes.Buffer
+	// 	bb.Write(cc)
+	// 	if err := (&jsonpb.Unmarshaler{}).Unmarshal(&bb, data); err != nil {
+	// 		log.Fatal(err)
+	// }
+
+	// 	response.News = append(response.News, data)
+	// }
 
 
 	// checkError(err)

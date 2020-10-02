@@ -63,7 +63,9 @@ type News struct {
 		Link        string `json:"link"`
 	}
 
-	type Results []Result
+	type Results struct {
+    NewsItem []Result `json:"news_item"`
+}
 
 func init() {
 	// Log as JSON instead of the default ASCII formatter.
@@ -97,7 +99,7 @@ func parseSource() {
 	// TODO: function to parse source
 }
 
-func checkKeyWord(data []string, keyword string) Results {
+func checkKeyWord(data []string, keyword string) []Result {
 
 
 
@@ -110,7 +112,7 @@ func checkKeyWord(data []string, keyword string) Results {
 
 	var result = make([]byte, 0)
 
-	var resultStruct Results
+	var resultStruct []Result
 
 
 	for _, el := range data {
@@ -169,12 +171,12 @@ func checkKeyWord(data []string, keyword string) Results {
 
 // CheckNews возвращает вхождения ключевых слов в новостных источниках в виде массива
 // Входные параметры - массивы источников и ключевых слов
-func CheckNews(sourceFile, keywordFile string) (Results, error) {
+func CheckNews(sourceFile, keywordFile string) ([]Result, error) {
 
 
 	log.Debug("Проверяем ", sourceFile, " и ", keywordFile)
 
-	var resultStruct Results
+	var resultStruct []Result
 
 	// resultStruct := make(Results, 0)
 
