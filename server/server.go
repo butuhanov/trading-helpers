@@ -107,8 +107,8 @@ func (s *NewsServiceServer) GetNews(ctx context.Context,
 	data :=&_struct.Struct{Fields: make(map[string]*_struct.Value)}
 
 
-	for i,v:=range(resStruct){
-		log.Debug(i, v)
+	for _,v := range(resStruct){
+		// log.Debug(i, v)
 		cc, _ := json.Marshal(v)
 		var bb bytes.Buffer
 		bb.Write(cc)
