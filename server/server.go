@@ -80,17 +80,23 @@ func (s *NewsServiceServer) GetNews(ctx context.Context,
 
 		resStruct.NewsItem = append(resStruct.NewsItem, v)
 
-		result, err := json.Marshal(resStruct)
+// 		result, err := json.Marshal(resStruct)
 
-		checkError(err)
-
-
-	jsonErr := json.Unmarshal(result, &resStruct)
+// 		checkError(err)
 
 
-	if jsonErr != nil {
-		log.Fatal(jsonErr)
-}
+// 	jsonErr := json.Unmarshal(result, &resStruct)
+
+
+// 	if jsonErr != nil {
+// 		log.Fatal(jsonErr)
+// }
+
+
+
+
+
+	}
 
 
 
@@ -106,7 +112,6 @@ cc, _ := json.Marshal(resStruct)
 		response.News = append(response.News, data)
 
 
-	}
 
 	// log.Debug(resStruct)
 
