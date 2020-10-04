@@ -61,6 +61,7 @@ type News struct {
 		Title       string `json:"title"`
 		Description string `json:"description"`
 		Link        string `json:"link"`
+		Hash        string `json:"hash"`
 	}
 
 	type Results struct {
@@ -132,7 +133,7 @@ func checkKeyWord(data []string, keyword string) []Result {
 			if strings.Contains(strings.ToLower(m.Title), keyword) {
 				log.Debug("Найдено ", keyword, " в заголовке")
 
-				r := Result{keyword, m.Date, m.SourceTitle, "заголовок", m.Title, RemoveHtmlTags(m.Description), m.Link}
+				r := Result{keyword, m.Date, m.SourceTitle, "заголовок", m.Title, RemoveHtmlTags(m.Description), m.Link, m.Hash}
 				b, err := json.Marshal(r)
 				checkError(err)
 
@@ -145,7 +146,7 @@ func checkKeyWord(data []string, keyword string) []Result {
 				if strings.Contains(strings.ToLower(m.Description), keyword) {
 					log.Debug("Найдено ", keyword, " в описании")
 
-					r := Result{keyword, m.Date, m.SourceTitle, "описание", m.Title, RemoveHtmlTags(m.Description), m.Link}
+					r := Result{keyword, m.Date, m.SourceTitle, "описание", m.Title, RemoveHtmlTags(m.Description), m.Link, m.Hash}
 					b, err := json.Marshal(r)
 					checkError(err)
 
