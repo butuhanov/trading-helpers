@@ -16,3 +16,12 @@ func ExampleCheckNews() {
 	fmt.Println(string(result), err)
 	// Output:null <nil>
 }
+
+
+func ExampleReadHTML() {
+
+	news.ReadHTML()
+
+	fmt.Println("fake output")
+	// Output:fake output
+}
