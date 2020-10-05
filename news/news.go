@@ -131,6 +131,7 @@ func checkKeyWord(data []string, keyword string) []Result {
 		if strings.HasPrefix(m.Error, "XML syntax error") {
 			log.Debug("ошибка с XML, пробуем распарсить HTML")
 			// ReadHTML()
+		}
 			if strings.HasPrefix(m.Error, "context deadline exceeded") {
 				log.Debug("ошибка по таймауту, возможно надо повторить попытку")
 
