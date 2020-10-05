@@ -152,6 +152,8 @@ c.OnScraped(func(r *colly.Response) {
 		e.ForEach(".services-new__item", func(_ int, el *colly.HTMLElement) {
 			log.Debug("services ", el.Text)
 			log.Debug("data-id ", el.Attr("data-id"))
+			// Follow next page link
+			e.Request.Visit(el.Attr("href"))
 
 		})
 
