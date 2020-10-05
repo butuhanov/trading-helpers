@@ -37,7 +37,13 @@ func ReadHTML() {
 	//
 	// Parallelism can be controlled also by spawning fixed
 	// number of go routines.
-	c.Limit(&colly.LimitRule{DomainGlob: "*", Parallelism: 2})
+// Limit the number of threads started by colly to two
+	// when visiting links which domains' matches "*httpbin.*" glob
+	c.Limit(&colly.LimitRule{
+		DomainGlob:  "*httpbin.*",
+		Parallelism: 2,
+		RandomDelay: 5 * time.Second,
+	})
 
 	// Colly uses Golang’s default http client as networking layer. HTTP options can be tweaked by changing the default HTTP roundtripper.
 	c.WithTransport(&http.Transport{
