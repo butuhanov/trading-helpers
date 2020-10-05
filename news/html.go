@@ -137,10 +137,27 @@ c.OnScraped(func(r *colly.Response) {
 	c.OnHTML(".news__panels", func(e *colly.HTMLElement) {
 		e.ForEach(".list__item", func(_ int, el *colly.HTMLElement) {
 			log.Debug("News ", el.Text)
-			log.Debug("Link ", el.ChildAttr("a","href"))
+			// log.Debug("Link ", el.ChildAttr("a","href"))
 		})
 
 	})
+
+
+	c.OnHTML(".container__services", func(e *colly.HTMLElement) {
+
+		ch := e.DOM.Contents()
+
+		log.Debug("e.DOM.Children ", ch.Text())
+
+		e.ForEach(".services-new__item", func(_ int, el *colly.HTMLElement) {
+			log.Debug("services ", el.Text)
+			log.Debug("data-id ", el.Attr("data-id"))
+
+		})
+
+	})
+
+
 
 
 	// Start scraping on https://hackerspaces.org
