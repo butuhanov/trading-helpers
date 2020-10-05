@@ -3,8 +3,9 @@ package news
 import (
 	"net"
 	"net/http"
+
+	// "regexp"
 	"time"
-	"regexp"
 
 	"github.com/gocolly/colly/v2"
 
@@ -29,12 +30,12 @@ func ReadHTML() {
 // MaxDepth is 2, so only the links on the scraped page
 		// and links on those pages are visited
 		colly.MaxDepth(2),
-		colly.Async(true),
+		// colly.Async(true),
 		// Visit only root url and urls which start with "e" or "h" on httpbin.org
-		colly.URLFilters(
-			regexp.MustCompile("http://httpbin\\.org/(|e.+)$"),
-			regexp.MustCompile("http://httpbin\\.org/h.+"),
-		),
+		// colly.URLFilters(
+		// 	regexp.MustCompile("http://httpbin\\.org/(|e.+)$"),
+		// 	regexp.MustCompile("http://httpbin\\.org/h.+"),
+		// ),
 	)
 
 		// Limit the maximum parallelism to 2
@@ -46,9 +47,9 @@ func ReadHTML() {
 // Limit the number of threads started by colly to two
 	// when visiting links which domains' matches "*httpbin.*" glob
 	c.Limit(&colly.LimitRule{
-		DomainGlob:  "*httpbin.*",
+		DomainGlob:  "*",
 		Parallelism: 2,
-		RandomDelay: 5 * time.Second,
+		RandomDelay: 1 * time.Second,
 	})
 
 	// Colly uses Golang’s default http client as networking layer. HTTP options can be tweaked by changing the default HTTP roundtripper.
@@ -80,13 +81,13 @@ c.OnRequest(func(r *colly.Request) {
 	// Before making a request put the URL with
 	// the key of "url" into the context of the request
 	c.OnRequest(func(r *colly.Request) {
-		r.Ctx.Put("url", r.URL.String())
+		r.Ctx.Put("context_url", r.URL.String())
 	})
 
 	// After making a request get "url" from
 	// the context of the request
 	c.OnResponse(func(r *colly.Response) {
-		log.Debug(r.Ctx.Get("url"))
+		log.Debug("получено из контекста ",r.Ctx.Get("context_url"))
 	})
 
 	// Set error handler
@@ -105,13 +106,13 @@ c.OnHTML("tr td:nth-of-type(1)", func(e *colly.HTMLElement) {
 
 
 c.OnHTML("li.list__item", func(e *colly.HTMLElement) {
-	 log.Debug("Found news:", e.Text)
-	 log.Debug("link:", e.ChildAttr("a.home-link","href"))
+	//  log.Debug("Found news:", e.Text)
+	//  log.Debug("link:", e.ChildAttr("a.home-link","href"))
 
 })
 
 c.OnXML("//h1", func(e *colly.XMLElement) {
-	log.Debug(e.Text)
+	// log.Debug("Заголовок ", e.Text)
 })
 
 c.OnScraped(func(r *colly.Response) {
@@ -130,6 +131,15 @@ c.OnScraped(func(r *colly.Response) {
 	//	c.Visit(e.Request.AbsoluteURL(link))
 	})
 
+
+	// d := c.Clone()
+
+	c.OnHTML(".news__panels", func(e *colly.HTMLElement) {
+		e.ForEach(".list__item", func(_ int, el *colly.HTMLElement) {
+			log.Debug("ForEach ", el)
+		})
+
+	})
 
 
 	// Start scraping on https://hackerspaces.org
