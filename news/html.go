@@ -44,33 +44,42 @@ func ReadHTML() {
 	// You can attach different type of callback functions to a Collector to control a collecting job or retrieve information.
 // Before making a request print "Visiting ..."
 c.OnRequest(func(r *colly.Request) {
-	log.Println("Visiting", r.URL.String())
-})
-c.OnError(func(_ *colly.Response, err error) {
-	log.Println("Something went wrong:", err)
+	log.Debug("Visiting", r.URL.String())
 })
 
+// Set HTML callback
+	// Won't be called if error occurs
+	// c.OnHTML("*", func(e *colly.HTMLElement) { // all page
+	// 	log.Println(e)
+	// })
+
+	// Set error handler
+	c.OnError(func(r *colly.Response, err error) {
+		log.Warn("Request URL:", r.Request.URL, "failed with response:", r, "\nError:", err)
+	})
+
+
 c.OnResponse(func(r *colly.Response) {
-	log.Println("Visited", r.Request.URL)
+	log.Debug("Visited", r.Request.URL)
 })
 
 c.OnHTML("tr td:nth-of-type(1)", func(e *colly.HTMLElement) {
-	log.Println("First column of a table row:", e.Text)
+	log.Debug("First column of a table row:", e.Text)
 })
 
 
 c.OnHTML("li.list__item", func(e *colly.HTMLElement) {
-	 log.Println("Found news:", e.Text)
-	 log.Println("link:", e.ChildAttr("a.home-link","href"))
+	 log.Debug("Found news:", e.Text)
+	 log.Debug("link:", e.ChildAttr("a.home-link","href"))
 
 })
 
 c.OnXML("//h1", func(e *colly.XMLElement) {
-	log.Println(e.Text)
+	log.Debug(e.Text)
 })
 
 c.OnScraped(func(r *colly.Response) {
-	log.Println("Finished", r.Request.URL)
+	log.Debug("Finished ", r.Request.URL)
 })
 
 // Full list of collector attributes https://godoc.org/github.com/gocolly/colly#Collector
