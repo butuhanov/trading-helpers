@@ -4,6 +4,7 @@ import (
 	"net"
 	"net/http"
 	"time"
+	"regexp"
 
 	"github.com/gocolly/colly/v2"
 
@@ -29,6 +30,11 @@ func ReadHTML() {
 		// and links on those pages are visited
 		colly.MaxDepth(2),
 		colly.Async(true),
+		// Visit only root url and urls which start with "e" or "h" on httpbin.org
+		colly.URLFilters(
+			regexp.MustCompile("http://httpbin\\.org/(|e.+)$"),
+			regexp.MustCompile("http://httpbin\\.org/h.+"),
+		),
 	)
 
 		// Limit the maximum parallelism to 2
