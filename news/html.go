@@ -25,10 +25,19 @@ func ReadHTML() {
 		// change User-Agent and url revisit options
 		colly.UserAgent("xy"),
 	colly.AllowURLRevisit(),
-	// MaxDepth is 1, so only the links on the scraped page
-		// is visited, and no further links are followed
-		colly.MaxDepth(1),
+// MaxDepth is 2, so only the links on the scraped page
+		// and links on those pages are visited
+		colly.MaxDepth(2),
+		colly.Async(true),
 	)
+
+		// Limit the maximum parallelism to 2
+	// This is necessary if the goroutines are dynamically
+	// created to control the limit of simultaneous requests.
+	//
+	// Parallelism can be controlled also by spawning fixed
+	// number of go routines.
+	c.Limit(&colly.LimitRule{DomainGlob: "*", Parallelism: 2})
 
 	// Colly uses Golang’s default http client as networking layer. HTTP options can be tweaked by changing the default HTTP roundtripper.
 	c.WithTransport(&http.Transport{
