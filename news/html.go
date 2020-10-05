@@ -136,7 +136,8 @@ c.OnScraped(func(r *colly.Response) {
 
 	c.OnHTML(".news__panels", func(e *colly.HTMLElement) {
 		e.ForEach(".list__item", func(_ int, el *colly.HTMLElement) {
-			log.Debug("ForEach ", el)
+			log.Debug("News ", el.Text)
+			log.Debug("Link ", el.ChildAttr("a","href"))
 		})
 
 	})
