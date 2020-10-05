@@ -8,7 +8,6 @@ import (
 	"encoding/xml"
 	"io/ioutil"
 
-	// "log"
 	"fmt"
 	"net/http"
 	"runtime"

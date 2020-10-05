@@ -17,9 +17,6 @@ import (
 
 	"github.com/golang/protobuf/jsonpb"
 
-	// "os"
-	// "os/signal"
-	// "time"
 
 	log "github.com/sirupsen/logrus"
 
@@ -36,25 +33,6 @@ import (
 type NewsServiceServer struct {
 }
 
-
-	// Результаты
-	// type Result struct {
-	// 	Keyword     string `json:"keyword"`
-	// 	Date        string `json:"date"`
-	// 	Source      string `json:"source"`
-	// 	Place       string `json:"place"`
-	// 	Title       string `json:"title"`
-	// 	Description string `json:"description"`
-	// 	Link        string `json:"link"`
-	// }
-
-
-// 	type Results struct {
-//     NewsItem []Result `json:"news_item"`
-// }
-
-
-
 func (s *NewsServiceServer) GetNews(ctx context.Context,
 	req *ps.MessageParams) (*ps.LastNews, error) {
 
@@ -68,10 +46,6 @@ func (s *NewsServiceServer) GetNews(ctx context.Context,
 
 	res, err := news.CheckNews(a, b)
 
-	// stringByte := "\x00" + strings.Join(res, "\x20\x00") // x20 = space and x00 = null
-
-	// response.News = []byte(stringByte)
-
 	resStruct := news.Results{}
 
 
@@ -79,22 +53,6 @@ func (s *NewsServiceServer) GetNews(ctx context.Context,
 		// log.Debug(i, v)
 
 		resStruct.NewsItem = append(resStruct.NewsItem, v)
-
-// 		result, err := json.Marshal(resStruct)
-
-// 		checkError(err)
-
-
-// 	jsonErr := json.Unmarshal(result, &resStruct)
-
-
-// 	if jsonErr != nil {
-// 		log.Fatal(jsonErr)
-// }
-
-
-
-
 
 	}
 
@@ -111,51 +69,7 @@ cc, _ := json.Marshal(resStruct)
 
 		response.News = append(response.News, data)
 
-
-
-	// log.Debug(resStruct)
-
-	// result, err := json.Marshal(resStruct)
-
-	// 	checkError(err)
-
-
-	// response.News, err = strconv.Unquote(string(result))
-
-	// resStruct := []Result{}
-
-
-	// jsonErr := json.Unmarshal(result, &resStruct)
-
 	log.Debug(len(resStruct.NewsItem))
-
-	// for i,v:=range(resStruct){
-	// 	log.Debug(i, v)
-	// }
-
-
-
-
-	// data :=&_struct.Struct{Fields: make(map[string]*_struct.Value)}
-
-
-	// for _,v := range(resStruct.NewsItem){
-	// 	// log.Debug(i, v)
-	// 	cc, _ := json.Marshal(v)
-	// 	var bb bytes.Buffer
-	// 	bb.Write(cc)
-	// 	if err := (&jsonpb.Unmarshaler{}).Unmarshal(&bb, data); err != nil {
-	// 		log.Fatal(err)
-	// }
-
-	// 	response.News = append(response.News, data)
-	// }
-
-
-	// checkError(err)
-
-	// log.Debug(response)
-
 
 	return response, err
 }

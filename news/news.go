@@ -9,7 +9,6 @@ import (
 	"regexp"
 	"sort"
 
-	// "log"
 	"os"
 	"strings"
 	"sync"
@@ -223,13 +222,6 @@ func CheckNews(sourceFile, keywordFile string) ([]Result, error) {
 	}
 
 	close(dataCh)
-	// data, err := readRSS(source)
-
-	// if err != nil {
-	// 	log.Println("ошибка при парсинге:", err, "пропускаем источник")
-	// 	continue
-	// }
-	// log.Printf("получено записей:%v", len(data))
 
 	log.Debug("получено записей:", len(data))
 	// log.Printf("данные:%v", data)
@@ -238,30 +230,7 @@ func CheckNews(sourceFile, keywordFile string) ([]Result, error) {
 
 		resultStruct = append(resultStruct, checkKeyWord(data, keyword)...)
 
-		// result = append(result, checkKeyWord(data, keyword)...)
-
 	}
-
-
-
-	// b, err := json.Marshal(resultStruct)
-	// b, err := JSONMarshal(resultStruct, true)
-
-	// 				checkError(err)
-
-
-	// for _, el := range result {
-	// 	// var m Result
-	// 	// err := json.Unmarshal([]byte(el), &m)
-	// 	// checkError(err)
-
-	// 	log.Debug(string(el))
-
-	// }
-
-	// log.Debug(b)
-
-	// log.Debug(string(b))
 
 	return resultStruct, nil
 
@@ -303,14 +272,6 @@ func readDataFromFile(source string) ([]string, error) {
 }
 
 
-func JSONMarshal(v interface{}, backslashEscape bool) ([]byte, error) {
-	b, err := json.Marshal(v)
-
-	if backslashEscape {
-			b = bytes.Replace(b, []byte(`\\`), []byte(`\`), -1)
-	}
-	return b, err
-}
 
 func RemoveHtmlTags(in string) string {
 	// regex to match html tag
