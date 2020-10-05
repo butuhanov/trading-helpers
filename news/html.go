@@ -62,7 +62,7 @@ func ReadHTML() {
 	// You can attach different type of callback functions to a Collector to control a collecting job or retrieve information.
 // Before making a request print "Visiting ..."
 c.OnRequest(func(r *colly.Request) {
-	log.Debug("Visiting", r.URL.String())
+	log.Debug("Visiting ", r.URL.String())
 })
 
 // Set HTML callback
@@ -71,6 +71,18 @@ c.OnRequest(func(r *colly.Request) {
 	// 	log.Println(e)
 	// })
 
+	// Before making a request put the URL with
+	// the key of "url" into the context of the request
+	c.OnRequest(func(r *colly.Request) {
+		r.Ctx.Put("url", r.URL.String())
+	})
+
+	// After making a request get "url" from
+	// the context of the request
+	c.OnResponse(func(r *colly.Response) {
+		log.Debug(r.Ctx.Get("url"))
+	})
+
 	// Set error handler
 	c.OnError(func(r *colly.Response, err error) {
 		log.Warn("Request URL:", r.Request.URL, "failed with response:", r, "\nError:", err)
@@ -78,7 +90,7 @@ c.OnRequest(func(r *colly.Request) {
 
 
 c.OnResponse(func(r *colly.Response) {
-	log.Debug("Visited", r.Request.URL)
+	log.Debug("Visited ", r.Request.URL)
 })
 
 c.OnHTML("tr td:nth-of-type(1)", func(e *colly.HTMLElement) {
