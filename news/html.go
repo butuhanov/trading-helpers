@@ -25,6 +25,9 @@ func ReadHTML() {
 		// change User-Agent and url revisit options
 		colly.UserAgent("xy"),
 	colly.AllowURLRevisit(),
+	// MaxDepth is 1, so only the links on the scraped page
+		// is visited, and no further links are followed
+		colly.MaxDepth(1),
 	)
 
 	// Colly uses Golang’s default http client as networking layer. HTTP options can be tweaked by changing the default HTTP roundtripper.
