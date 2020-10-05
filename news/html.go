@@ -13,6 +13,21 @@ import (
 )
 
 
+
+type HTMLItem struct {
+	Title       string `"title"`
+	Link        string `"link"`
+	Description string `"description"`
+	Date        string `"pubDate"`
+}
+
+type HTML struct {
+	Title       string `"title"`
+	Link        string `"link"`
+	Description string `"description"`
+	Items       []HTMLItem `"item"`
+}
+
 func ReadHTML() {
 	log.Debug("парсим html")
 

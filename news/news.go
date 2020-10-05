@@ -125,7 +125,18 @@ func checkKeyWord(data []string, keyword string) []Result {
 		// Поиск ключевого слова в заголовке
 
 		if m.Error != "" {
-			log.Info("При получении данных получена ошибка, пропускаем ", m.Link)
+			log.Info("При получении данных получена ошибка в источнике ", m.Link, " ошибка:", m.Error)
+
+			// Если ошибка с XML пробуем распарсить HTML
+		if strings.HasPrefix(m.Error, "XML syntax error") {
+			log.Debug("ошибка с XML, пробуем распарсить HTML")
+			// ReadHTML()
+			if strings.HasPrefix(m.Error, "context deadline exceeded") {
+				log.Debug("ошибка по таймауту, возможно надо повторить попытку")
+
+		}
+
+
 		} else {
 			if strings.Contains(strings.ToLower(m.Title), keyword) {
 				log.Debug("Найдено ", keyword, " в заголовке")
