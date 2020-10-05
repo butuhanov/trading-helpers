@@ -4,8 +4,6 @@ import (
 	"bufio"
 	"encoding/json"
 
-	"bytes"
-
 	"regexp"
 	"sort"
 
