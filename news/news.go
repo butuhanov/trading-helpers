@@ -127,11 +127,6 @@ func checkKeyWord(data []string, keyword string) []Result {
 		if m.Error != "" {
 			log.Info("При получении данных получена ошибка в источнике ", m.Link, " ошибка:", m.Error)
 
-			// Если ошибка с XML пробуем распарсить HTML
-		if strings.HasPrefix(m.Error, "XML syntax error") {
-			log.Debug("ошибка с XML, пробуем распарсить HTML")
-			// ReadHTML()
-		}
 			if strings.HasPrefix(m.Error, "context deadline exceeded") {
 				log.Debug("ошибка по таймауту, возможно надо повторить попытку")
 
@@ -226,6 +221,7 @@ func CheckNews(sourceFile, keywordFile string) ([]Result, error) {
 	log.Debug("все запросы выполнены")
 
 	var data []string
+	var dataHTML []string
 
 	for i := 0; i < cap(dataCh); i++ {
 		data = append(data, <-dataCh...)
@@ -236,9 +232,41 @@ func CheckNews(sourceFile, keywordFile string) ([]Result, error) {
 	log.Debug("получено записей:", len(data))
 	// log.Printf("данные:%v", data)
 
-	for _, keyword := range keywords { // перебираем все ключевые слова
+
+	for _, el := range data { // перебираем все ключевые слова
+
+		var m News
+		err := json.Unmarshal([]byte(el), &m)
+		checkError(err)
+
+		// Если ошибка с XML пробуем распарсить HTML
+		if strings.HasPrefix(m.Error, "XML syntax error") {
+			log.Debug("ошибка с XML, пробуем распарсить HTML")
+
+			res, err := ReadHTML(m.Link)
+			if err ==nil {
+				dataHTML = append(dataHTML, res)
+			} else {
+				log.Warn("ошибка при парсинге HTML страницы ", err.Error())
+			}
+
+		}
+
+	// resultStruct = append(resultStruct, checkKeyWord(data, keyword)...)
+
+}
+
+
+	for _, keyword := range keywords { // перебираем все ключевые слова для RSS потоков
 
 		resultStruct = append(resultStruct, checkKeyWord(data, keyword)...)
+
+	}
+
+
+	for _, keyword := range keywords { // перебираем все ключевые слова для html страниц
+
+		resultStruct = append(resultStruct, checkKeyWord(dataHTML, keyword)...)
 
 	}
 

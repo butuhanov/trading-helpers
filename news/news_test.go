@@ -20,8 +20,10 @@ func ExampleCheckNews() {
 
 func ExampleReadHTML() {
 
-	news.ReadHTML()
+	res, err := news.ReadHTML("http://yandex.ru")
 
-	fmt.Println("fake output")
-	// Output:fake output
+	result, err := json.Marshal(res)
+
+	fmt.Println(string(result), err)
+	// Output:"" <nil>
 }

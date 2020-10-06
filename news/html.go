@@ -28,9 +28,9 @@ type HTML struct {
 	Items       []HTMLItem `"item"`
 }
 
-func ReadHTML() {
+func ReadHTML(source string) (string, error) {
 	log.Debug("парсим html")
-
+	var result string
 	// Instantiate default collector
 	// ollector manages the network communication and responsible for the execution of the attached callbacks while a collector job is running.
 	// Create a collector with default settings:
@@ -38,9 +38,9 @@ func ReadHTML() {
 
 	c := colly.NewCollector(
 		// Visit only domains: hackerspaces.org, wiki.hackerspaces.org
-		colly.AllowedDomains("yandex.ru", "www.yandex.ru"),
+		// colly.AllowedDomains("yandex.ru", "www.yandex.ru"),
 		// change User-Agent and url revisit options
-		colly.UserAgent("xy"),
+		colly.UserAgent("mozilla"),
 	colly.AllowURLRevisit(),
 // MaxDepth is 2, so only the links on the scraped page
 		// and links on those pages are visited
@@ -137,14 +137,14 @@ c.OnScraped(func(r *colly.Response) {
 // Full list of collector attributes https://godoc.org/github.com/gocolly/colly#Collector
 
 	// On every a element which has href attribute call callback
-	c.OnHTML("a[href]", func(e *colly.HTMLElement) {
+	// c.OnHTML("a[href]", func(e *colly.HTMLElement) {
 		// link := e.Attr("href")
 		// Print link
 		// log.Printf("Link found: %q -> %s\n", e.Text, link)
 		// Visit link found on page
 		// Only those links are visited which are in AllowedDomains
 	//	c.Visit(e.Request.AbsoluteURL(link))
-	})
+	// })
 
 
 	// d := c.Clone()
@@ -167,8 +167,9 @@ c.OnScraped(func(r *colly.Response) {
 		e.ForEach(".services-new__item", func(_ int, el *colly.HTMLElement) {
 			log.Debug("services ", el.Text)
 			log.Debug("data-id ", el.Attr("data-id"))
+
 			// Follow next page link
-			e.Request.Visit(el.Attr("href"))
+			// e.Request.Visit(el.Attr("href"))
 
 		})
 
@@ -178,5 +179,7 @@ c.OnScraped(func(r *colly.Response) {
 
 
 	// Start scraping on https://hackerspaces.org
-	c.Visit("https://yandex.ru/")
+	c.Visit(source)
+
+	return result, nil
 }
