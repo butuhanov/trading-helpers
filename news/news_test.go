@@ -25,5 +25,5 @@ func ExampleReadHTML() {
 	result, err := json.Marshal(res)
 
 	fmt.Println(string(result), err)
-	// Output:"" <nil>
+	// Output:[] <nil>
 }

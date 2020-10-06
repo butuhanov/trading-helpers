@@ -245,7 +245,7 @@ func CheckNews(sourceFile, keywordFile string) ([]Result, error) {
 
 			res, err := ReadHTML(m.Link)
 			if err ==nil {
-				dataHTML = append(dataHTML, res)
+				dataHTML = append(dataHTML, res...)
 			} else {
 				log.Warn("ошибка при парсинге HTML страницы ", err.Error())
 			}

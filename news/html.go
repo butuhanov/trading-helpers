@@ -1,6 +1,7 @@
 package news
 
 import (
+	"encoding/json"
 	"net"
 	"net/http"
 
@@ -28,9 +29,9 @@ type HTML struct {
 	Items       []HTMLItem `"item"`
 }
 
-func ReadHTML(source string) (string, error) {
+func ReadHTML(source string) ([]string, error) {
 	log.Debug("парсим html")
-	var result string
+	var result = make([]string, 0)
 	// Instantiate default collector
 	// ollector manages the network communication and responsible for the execution of the attached callbacks while a collector job is running.
 	// Create a collector with default settings:
@@ -177,6 +178,64 @@ c.OnScraped(func(r *colly.Response) {
 
 
 
+	c.OnHTML(".analitic_list", func(e *colly.HTMLElement) {
+
+
+		e.ForEach("li", func(_ int, el *colly.HTMLElement) {
+
+
+			// log.Debug("string ", el.ChildAttr(".info"))
+
+			// info,_ :=el.DOM.Attr("")
+
+			info := el.ChildText(".info a")
+			log.Debug("string ", info)
+			url := el.ChildAttr(".info a","href")
+			log.Debug("link ", url)
+
+			sourceTitle := info
+
+			title := info
+			description := info
+			link := url
+			date := info
+			hash := getMD5Hash(title + description + link)
+
+			// Если новость уже просмотрена, то переходим к следующей
+			_, ok := findElement(knownNews, hash)
+			// log.Printf("ищем элемент %v в %v, результат %v\n", m.Hash, knownNews, ok)
+			if ok {
+				// log.Println("новость", title, "уже проверяли.. пропускаем..")
+				return
+			}
+
+			data := &News{
+				SourceTitle: sourceTitle,
+				Title:       title,
+				Description: description,
+				Link:        link,
+				Date:        date,
+				Hash:        hash,
+			}
+
+			json, err := json.Marshal(data)
+
+			if err != nil {
+				return
+			}
+
+			if len(knownNews) < maxNewsLength {
+				knownNews = append(knownNews, hash)
+			} else {
+				knownNews = append(knownNews[maxNewsLength:], knownNews[1:]...)
+				knownNews = append(knownNews, hash)
+			}
+
+			result = append(result, string(json))
+
+		})
+
+	})
 
 	// Start scraping on https://hackerspaces.org
 	c.Visit(source)
