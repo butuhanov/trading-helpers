@@ -327,3 +327,12 @@ func RemoveHtmlTags(in string) string {
 	}
 	return in
 }
+
+func updateKnownNews(hash string){
+	if len(knownNews) < maxNewsLength {
+		knownNews = append(knownNews, hash)
+	} else {
+		knownNews = append(knownNews[maxNewsLength:], knownNews[1:]...)
+		knownNews = append(knownNews, hash)
+	}
+}

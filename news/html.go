@@ -224,12 +224,7 @@ c.OnScraped(func(r *colly.Response) {
 				return
 			}
 
-			if len(knownNews) < maxNewsLength {
-				knownNews = append(knownNews, hash)
-			} else {
-				knownNews = append(knownNews[maxNewsLength:], knownNews[1:]...)
-				knownNews = append(knownNews, hash)
-			}
+			updateKnownNews(hash)
 
 			result = append(result, string(json))
 

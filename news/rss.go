@@ -123,12 +123,7 @@ func readRSS(source string, wg *sync.WaitGroup, dataCh chan []string) error {
 			return err
 		}
 
-		if len(knownNews) < maxNewsLength {
-			knownNews = append(knownNews, hash)
-		} else {
-			knownNews = append(knownNews[maxNewsLength:], knownNews[1:]...)
-			knownNews = append(knownNews, hash)
-		}
+		updateKnownNews(hash)
 
 		result = append(result, string(json))
 
