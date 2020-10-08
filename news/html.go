@@ -14,21 +14,6 @@ import (
 )
 
 
-
-type HTMLItem struct {
-	Title       string `"title"`
-	Link        string `"link"`
-	Description string `"description"`
-	Date        string `"pubDate"`
-}
-
-type HTML struct {
-	Title       string `"title"`
-	Link        string `"link"`
-	Description string `"description"`
-	Items       []HTMLItem `"item"`
-}
-
 func ReadHTML(source string) ([]string, error) {
 	log.Debug("парсим html")
 	var result = make([]string, 0)
@@ -88,12 +73,6 @@ c.OnRequest(func(r *colly.Request) {
 	log.Debug("Visiting ", r.URL.String())
 })
 
-// Set HTML callback
-	// Won't be called if error occurs
-	// c.OnHTML("*", func(e *colly.HTMLElement) { // all page
-	// 	log.Println(e)
-	// })
-
 	// Before making a request put the URL with
 	// the key of "url" into the context of the request
 	c.OnRequest(func(r *colly.Request) {
@@ -103,7 +82,7 @@ c.OnRequest(func(r *colly.Request) {
 	// After making a request get "url" from
 	// the context of the request
 	c.OnResponse(func(r *colly.Response) {
-		log.Debug("получено из контекста ",r.Ctx.Get("context_url"))
+		// log.Debug("получено из контекста ",r.Ctx.Get("context_url"))
 	})
 
 	// Set error handler
@@ -184,10 +163,6 @@ c.OnScraped(func(r *colly.Response) {
 		e.ForEach("li", func(_ int, el *colly.HTMLElement) {
 
 
-			// log.Debug("string ", el.ChildAttr(".info"))
-
-			// info,_ :=el.DOM.Attr("")
-
 			info := el.ChildText(".info a")
 			log.Debug("string ", info)
 			url := el.ChildAttr(".info a","href")
@@ -232,7 +207,6 @@ c.OnScraped(func(r *colly.Response) {
 
 	})
 
-	// Start scraping on https://hackerspaces.org
 	c.Visit(source)
 
 	return result, nil
