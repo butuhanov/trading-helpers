@@ -87,7 +87,7 @@ c.OnRequest(func(r *colly.Request) {
 
 	// Set error handler
 	c.OnError(func(r *colly.Response, err error) {
-		log.Warn("Request URL:", r.Request.URL, "failed with response:", r, "\nError:", err)
+		log.Warn("Request URL:", r.Request.URL, "failed with response:",string(r.Body), "\nError:", err)
 	})
 
 
