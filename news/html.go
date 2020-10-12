@@ -179,10 +179,7 @@ c.OnScraped(func(r *colly.Response) {
 			// Если новость уже просмотрена, то переходим к следующей
 			_, ok := findElement(knownNews, hash)
 			// log.Printf("ищем элемент %v в %v, результат %v\n", m.Hash, knownNews, ok)
-			if ok {
-				// log.Println("новость", title, "уже проверяли.. пропускаем..")
-				return
-			}
+			if !ok { // новости ещё не было
 
 			data := &News{
 				SourceTitle: sourceTitle,
@@ -196,12 +193,14 @@ c.OnScraped(func(r *colly.Response) {
 			json, err := json.Marshal(data)
 
 			if err != nil {
+				log.Warn("marshalling error")
 				return
 			}
 
 			updateKnownNews(hash)
 
 			result = append(result, string(json))
+		}
 
 		})
 
