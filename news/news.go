@@ -2,19 +2,15 @@ package news
 
 import (
 	"bufio"
-	"encoding/json"
-
 	"crypto/md5"
 	"encoding/hex"
-
+	"encoding/json"
+	"os"
+	"path/filepath"
 	"regexp"
 	"sort"
-
-	"os"
 	"strings"
 	"sync"
-
-	"path/filepath"
 
 	log "github.com/sirupsen/logrus"
 )

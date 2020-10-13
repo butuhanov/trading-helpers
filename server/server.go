@@ -1,33 +1,20 @@
 package server
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
+	"flag"
 	"net"
-
 	"net/http"
 
-	"flag"
-
-	"strconv"
-	"strings"
-
-	"bytes"
-
-	"encoding/json"
-
-	"github.com/golang/protobuf/jsonpb"
-
-
-	log "github.com/sirupsen/logrus"
-
 	"github.com/butuhanov/trading-helpers/news"
-	"google.golang.org/grpc"
-
 	ps "github.com/butuhanov/trading-helpers/proto"
-
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-
+	"github.com/golang/protobuf/jsonpb"
 	_struct "github.com/golang/protobuf/ptypes/struct"
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	log "github.com/sirupsen/logrus"
+	"google.golang.org/grpc"
 )
 
 type NewsServiceServer struct {
@@ -76,49 +63,45 @@ cc, _ := json.Marshal(resStruct)
 
 
 func StartServer() {
-	log.Info("starting server...")
+		log.Info("starting server...")
 
-	log.Info("starting grpc server...")
+		log.Info("starting grpc server...")
+		server := grpc.NewServer()
 
-	server := grpc.NewServer()
+		instance := new(NewsServiceServer)
 
-	instance := new(NewsServiceServer)
+		ps.RegisterNewsServiceServer(server, instance)
+		listener, err := net.Listen("tcp", "localhost:8080")
 
-	ps.RegisterNewsServiceServer(server, instance)
-	listener, err := net.Listen("tcp", "localhost:8080")
-	go server.Serve(listener)
+		go server.Serve(listener)
 
+		log.Info("starting http server...")
+		var (
+			// command-line options:
+			// gRPC server endpoint
+			grpcServerEndpoint = flag.String("grpc-server-endpoint",  "localhost:8080", "gRPC server endpoint")
+		)
 
-	log.Info("starting http server...")
-var (
-  // command-line options:
-  // gRPC server endpoint
-  grpcServerEndpoint = flag.String("grpc-server-endpoint",  "localhost:8080", "gRPC server endpoint")
-)
+		ctx := context.Background()
+		ctx, cancel := context.WithCancel(ctx)
+		defer cancel()
 
-ctx := context.Background()
-  ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
-
-
-
-	// Register gRPC server endpoint
-  // Note: Make sure the gRPC server is running properly and accessible
-  mux := runtime.NewServeMux()
-  opts := []grpc.DialOption{grpc.WithInsecure()}
-	// err := gw.RegisterYourServiceHandlerFromEndpoint(ctx, mux,  *grpcServerEndpoint, opts)
-	err = ps.RegisterNewsServiceHandlerFromEndpoint(ctx, mux,  *grpcServerEndpoint, opts)
-  if err != nil {
-    log.Fatal(err)
-  }
+		// Register gRPC server endpoint
+		// Note: Make sure the gRPC server is running properly and accessible
+		mux := runtime.NewServeMux()
+		opts := []grpc.DialOption{grpc.WithInsecure()}
+		// err := gw.RegisterYourServiceHandlerFromEndpoint(ctx, mux,  *grpcServerEndpoint, opts)
+		err = ps.RegisterNewsServiceHandlerFromEndpoint(ctx, mux,  *grpcServerEndpoint, opts)
+		if err != nil {
+			log.Fatal(err)
+		}
 
 
-  // Start HTTP server (and proxy calls to gRPC server endpoint)
-	log.Fatal(http.ListenAndServe("localhost:23456", mux))
+		// Start HTTP server (and proxy calls to gRPC server endpoint)
+		log.Fatal(http.ListenAndServe("localhost:23456", mux))
 
-	// check example curl -X POST http://127.0.0.1:23456/v1/news/last -d '{"sources":"news/example_data/sources.txt", "keywords":"news/example_data/keywords.txt"}'
+		// check example curl -X POST http://127.0.0.1:23456/v1/news/last -d '{"sources":"news/example_data/sources.txt", "keywords":"news/example_data/keywords.txt"}'
 
-	log.Info("server started...")
 }
 
 
@@ -127,13 +110,4 @@ func checkError(err error) {
 	if err != nil {
 		log.Warn("При выполнении операции произошла ошибка:", err)
 	}
-}
-
-
-func convert( b []byte ) string {
-	s := make([]string,len(b))
-	for i := range b {
-			s[i] = strconv.Itoa(int(b[i]))
-	}
-	return strings.Join(s,",")
 }
