@@ -39,8 +39,6 @@ func readRSS(source string, wg *sync.WaitGroup, dataCh chan []string) error {
 
 	defer wg.Done()
 
-	// log.Println("проверяем", source)
-
 	var result = make([]string, 0)
 
 	c := &http.Client{
