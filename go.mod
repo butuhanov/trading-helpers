@@ -6,7 +6,7 @@ require (
 	github.com/antchfx/xmlquery v1.3.2 // indirect
 	github.com/gocolly/colly/v2 v2.1.0
 	github.com/golang/protobuf v1.4.2
-	github.com/grpc-ecosystem/grpc-gateway v1.15.0
+	github.com/grpc-ecosystem/grpc-gateway v1.15.2
 	github.com/pkg/profile v1.5.0
 	github.com/sirupsen/logrus v1.6.0
 	golang.org/x/net v0.0.0-20200927032502-5d4f70055728 // indirect
