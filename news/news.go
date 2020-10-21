@@ -5,6 +5,7 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -92,8 +93,32 @@ func init() {
 
 }
 
-func parseSource() {
-	// TODO: function to parse source
+func parseSource(sourceType, sourceFile, keywordFile string) (sources, keywords []string, err error) {
+
+	switch sourceType {
+	case "file":
+
+		sourcesFromFile, err := readDataFromFile(sourceFile)
+	if err != nil {
+		return nil,nil, err
+	}
+	keywordsFromFile, err := readDataFromFile(keywordFile)
+	if err != nil {
+		return nil, nil, err
+	}
+	sources = append(sources, sourcesFromFile...)
+	keywords = append(keywords, keywordsFromFile...)
+
+	return sources, keywords, nil
+
+	default:
+		err = errors.New("Неизвестный тип источника")
+		return nil, nil, err
+
+	}
+
+
+
 }
 
 func checkKeyWord(data []string, keyword string) []Result {
@@ -194,16 +219,11 @@ func CheckNews(sourceFile, keywordFile string) ([]Result, error) {
 
 	var sources, keywords []string
 
-	sourcesFromFile, err := readDataFromFile(sourceFile)
-	if err != nil {
-		return nil, err
+	sources, keywords, ok := parseSource("file", sourceFile, keywordFile)
+
+	if ok!=nil {
+		log.Fatal("Ошибка при чтении входных данных")
 	}
-	keywordsFromFile, err := readDataFromFile(keywordFile)
-	if err != nil {
-		return nil, err
-	}
-	sources = append(sources, sourcesFromFile...)
-	keywords = append(keywords, keywordsFromFile...)
 
 	// dataCh := make(chan []string)  // канал для результатов запроса
 	dataCh := make(chan []string, len(sources)) // буферизованный
