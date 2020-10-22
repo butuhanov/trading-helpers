@@ -7,6 +7,7 @@ import (
 	"flag"
 	"net"
 	"net/http"
+	"io"
 
 	"github.com/butuhanov/trading-helpers/news"
 	ps "github.com/butuhanov/trading-helpers/proto"
@@ -102,6 +103,18 @@ func StartServer() {
 
 		// check example curl -X POST http://127.0.0.1:23456/v1/news/last -d '{"sources":"news/example_data/sources.txt", "keywords":"news/example_data/keywords.txt"}'
 
+}
+
+// http.HandleFunc("/health-check", HealthCheckHandler)
+func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
+	// Очень простой хендлер проверки состояния.
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+
+	// В будущем мы хотим сообщать сообщать о состоянии
+	// базы данных или кеша (например Redis) выполняя
+	// простой PING и отдавать все это в запросе
+	io.WriteString(w, `{"alive": true}`)
 }
 
 
