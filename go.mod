@@ -9,8 +9,8 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/konsorten/go-windows-terminal-sequences v1.0.3 // indirect
 	github.com/sirupsen/logrus v1.7.0
-	golang.org/x/net v0.0.0-20201027133719-8eef5233e2a1 // indirect
-	golang.org/x/sys v0.0.0-20201028094953-708e7fb298ac // indirect
+	golang.org/x/net v0.0.0-20201029055024-942e2f445f3c // indirect
+	golang.org/x/sys v0.0.0-20201029080932-201ba4db2418 // indirect
 	google.golang.org/genproto v0.0.0-20201028140639-c77dae4b0522
 	google.golang.org/grpc v1.33.1
 	google.golang.org/protobuf v1.25.0
