@@ -1,6 +1,6 @@
 module github.com/butuhanov/trading-helpers
 
-go 1.14
+go 1.15
 
 require (
 	github.com/antchfx/xmlquery v1.3.3 // indirect
