@@ -5,6 +5,7 @@ go 1.15
 require (
 	github.com/PuerkitoBio/goquery v1.6.0 // indirect
 	github.com/antchfx/xmlquery v1.3.3 // indirect
+	github.com/antchfx/xpath v1.1.11 // indirect
 	github.com/gocolly/colly/v2 v2.1.0
 	github.com/golang/protobuf v1.4.3
 	github.com/google/go-cmp v0.5.4 // indirect
@@ -15,13 +16,14 @@ require (
 	github.com/sirupsen/logrus v1.7.0
 	github.com/stretchr/testify v1.6.1 // indirect
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b // indirect
-	golang.org/x/net v0.0.0-20201110031124-69a78807bb2b // indirect
-	golang.org/x/sys v0.0.0-20201130072748-111129e158e2 // indirect
+	golang.org/x/net v0.0.0-20201201195509-5d6afe98e0b7 // indirect
+	golang.org/x/sys v0.0.0-20201201145000-ef89a241ccb3 // indirect
 	golang.org/x/text v0.3.4 // indirect
 	golang.org/x/tools v0.0.0-20201125231158-b5590deeca9b // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/genproto v0.0.0-20201119123407-9b1e624d6bc4
+	google.golang.org/genproto v0.0.0-20201201144952-b05cb90ed32e
 	google.golang.org/grpc v1.33.2
 	google.golang.org/protobuf v1.25.0
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
+	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776 // indirect
 )
