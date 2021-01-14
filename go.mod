@@ -12,13 +12,13 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/kr/text v0.2.0 // indirect
 	github.com/sirupsen/logrus v1.7.0
-	github.com/stretchr/testify v1.6.1 // indirect
+	github.com/stretchr/testify v1.7.0 // indirect
 	golang.org/x/net v0.0.0-20201224014010-6772e930b67b // indirect
-	golang.org/x/sys v0.0.0-20210113000019-eaf3bda374d2 // indirect
+	golang.org/x/sys v0.0.0-20210113181707-4bcb84eeeb78 // indirect
 	golang.org/x/text v0.3.5 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/genproto v0.0.0-20210111234610-22ae2b108f89
-	google.golang.org/grpc v1.34.1
+	google.golang.org/genproto v0.0.0-20210113195801-ae06605f4595
+	google.golang.org/grpc v1.35.0
 	google.golang.org/protobuf v1.25.0
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
