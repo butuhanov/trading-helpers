@@ -5,9 +5,9 @@ import (
 	"context"
 	"encoding/json"
 	"flag"
+	"io"
 	"net"
 	"net/http"
-	"io"
 
 	"github.com/butuhanov/trading-helpers/news"
 	ps "github.com/butuhanov/trading-helpers/proto"
@@ -63,7 +63,7 @@ cc, _ := json.Marshal(resStruct)
 }
 
 
-func StartServer() {
+func StartServer( grpcPort, httpPort string) {
 		log.Info("starting server...")
 
 		log.Info("starting grpc server...")
@@ -72,7 +72,7 @@ func StartServer() {
 		instance := new(NewsServiceServer)
 
 		ps.RegisterNewsServiceServer(server, instance)
-		listener, err := net.Listen("tcp", "localhost:8080")
+		listener, err := net.Listen("tcp", "localhost:"+grpcPort)
 
 		go server.Serve(listener)
 
@@ -80,8 +80,9 @@ func StartServer() {
 		var (
 			// command-line options:
 			// gRPC server endpoint
-			grpcServerEndpoint = flag.String("grpc-server-endpoint",  "localhost:8080", "gRPC server endpoint")
+			grpcServerEndpoint = flag.String("grpc-server-endpoint",  "localhost:"+httpPort, "gRPC server endpoint")
 		)
+		log.Info("endpoint:"+*grpcServerEndpoint)
 
 		ctx := context.Background()
 		ctx, cancel := context.WithCancel(ctx)
@@ -99,7 +100,7 @@ func StartServer() {
 
 
 		// Start HTTP server (and proxy calls to gRPC server endpoint)
-		log.Fatal(http.ListenAndServe("localhost:23456", mux))
+		log.Fatal(http.ListenAndServe("localhost:"+httpPort, mux))
 
 		// check example curl -X POST http://127.0.0.1:23456/v1/news/last -d '{"sources":"news/example_data/sources.txt", "keywords":"news/example_data/keywords.txt"}'
 
