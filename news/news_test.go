@@ -8,8 +8,8 @@ import (
 )
 
 func ExampleCheckNews() {
-	a := "sources.txt"
-	b := "keywords.txt"
+	a := "/tmp/sources.txt"
+	b := "/tmp/keywords.txt"
 	res, err := news.CheckNews(a, b)
 	result, err := json.Marshal(res)
 
