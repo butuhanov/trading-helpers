@@ -4,7 +4,7 @@ go 1.15
 
 require (
 	github.com/PuerkitoBio/goquery v1.6.1 // indirect
-	github.com/antchfx/xmlquery v1.3.3 // indirect
+	github.com/antchfx/xmlquery v1.3.4 // indirect
 	github.com/antchfx/xpath v1.1.11 // indirect
 	github.com/gocolly/colly/v2 v2.1.0
 	github.com/golang/protobuf v1.4.3
@@ -17,7 +17,7 @@ require (
 	golang.org/x/sys v0.0.0-20210124154548-22da62e12c0c // indirect
 	golang.org/x/text v0.3.5 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/genproto v0.0.0-20210211221406-4ccc9a5e4183
+	google.golang.org/genproto v0.0.0-20210212180131-e7f2df4ecc2d
 	google.golang.org/grpc v1.35.0
 	google.golang.org/protobuf v1.25.0
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
